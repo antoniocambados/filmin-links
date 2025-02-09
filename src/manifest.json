@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Filmin Links",
+  "version": "1.0",
+  "description": "Añade enlaces de FilmAffinity a Filmin. Encontrarás enlaces en títulos de películas, series, directores y reparto.",
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.filmin.es/*"],
+      "js": ["main.js"],
+      "css": ["assets/main.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "host_permissions": ["*://*.filmin.es/*"]
+}

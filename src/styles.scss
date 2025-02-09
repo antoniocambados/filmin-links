@@ -1,0 +1,45 @@
+.fa-button {
+  position: relative;
+  z-index: 1000;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  background-color: #006eca;
+  color: #fdcc1a;
+  padding: 0 1.5ch;
+  margin-right: 0.25rem;
+  margin-left: 0.25rem;
+  margin-bottom: 0.25rem;
+  pointer-events: all;
+  font-size: 0.75rem;
+  line-height: 1;
+  width: 4ch;
+  height: 2rem !important;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+  text-decoration: none;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: #0f93f2;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  &.inline {
+    display: inline-flex !important;
+    margin: 0 0.25rem 0 0;
+    padding: 0.65rem 1rem;
+    font-size: 0.75em;
+    width: 3ch;
+    height: 1.5em !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .card-image[data-unveil] .fa-button {
+    display: none !important;
+  }
+}
