@@ -4,8 +4,8 @@
   "version": "1.0",
   "description": "Añade enlaces de FilmAffinity a Filmin. Encontrarás enlaces en títulos de películas, series, directores y reparto.",
   "icons": {
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "content_scripts": [
     {
