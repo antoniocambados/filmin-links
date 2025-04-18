@@ -19,7 +19,7 @@ export default class LetterboxdProvider implements Provider {
   makeButton(url: string, extraClasses: string[] = []): HTMLAnchorElement {
     const link: HTMLAnchorElement = document.createElement('a')
     const icon: HTMLSpanElement = document.createElement('span')
-    icon.textContent = 'Lbxd'
+    icon.textContent = 'Letterboxd'
     link.appendChild(icon)
     link.href = url
     link.target = '_blank'

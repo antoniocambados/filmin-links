@@ -19,7 +19,7 @@ export default class FilmaffinityProvider implements Provider {
   makeButton(url: string, extraClasses: string[] = []): HTMLAnchorElement {
     const link: HTMLAnchorElement = document.createElement('a')
     const icon: HTMLSpanElement = document.createElement('span')
-    icon.textContent = 'FA'
+    icon.textContent = 'FilmAffinity'
     link.appendChild(icon)
     link.href = url
     link.target = '_blank'

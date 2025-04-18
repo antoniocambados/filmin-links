@@ -15,5 +15,11 @@
       "run_at": "document_end"
     }
   ],
-  "host_permissions": ["*://*.filmin.es/*"]
+  "host_permissions": ["*://*.filmin.es/*"],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/full.svg"],
+      "matches": ["*://*.filmin.es/*"]
+    }
+  ]
 }

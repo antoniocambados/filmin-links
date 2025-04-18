@@ -1,27 +1,76 @@
 @use 'sass:color';
+@import 'tippy.js/dist/tippy.css';
+
+$filminBackground: #242432;
+$filminColor: #02ffa1;
+$prefix: 'filminlinks';
 
 :root {
+  --flinks-button-toolbar-background: #{$filminBackground};
+  --flinks-button-toolbar-border: #{color.adjust($filminBackground, $lightness: 25%, $alpha: 0.8)};
   --flinks-button-toolbar-radius: 0.25rem;
-  --flinks-button-background: #151426;
-  --flinks-button-background-hover: #{color.adjust(#151426, $lightness: 15%)};
-  --flinks-button-color: #02ffa1;
-  --flinks-button-color-hover: #{color.adjust(#02ffa1, $lightness: 15%)};
+  --flinks-button-toolbar-shadow: #{color.adjust($filminBackground, $lightness: -10%, $alpha: 0.8)};
+  --flinks-button-background: #{color.adjust($filminBackground, $lightness: -20%)};
+  --flinks-button-background-hover: #{color.adjust($filminBackground, $lightness: -5%)};
+  --flinks-button-color: #{$filminColor};
+  --flinks-button-color-hover: #{color.adjust($filminColor, $lightness: 15%)};
 }
 
-.filminlinks {
+.tippy-box[data-theme~='#{$prefix}'] {
+  background-color: var(--flinks-button-toolbar-background);
+  color: white;
+  border: 1px solid var(--flinks-button-toolbar-border);
+  box-shadow: 0 10px 20px -5px var(--flinks-button-toolbar-shadow);
+
+  .tippy-content {
+    padding: 1rem;
+  }
+
+  .tippy-arrow {
+    color: var(--flinks-button-toolbar-background);
+  }
+}
+
+.#{$prefix} {
+  font-size: 1rem;
+
+  &-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    &-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+
+      &-center {
+        justify-content: center;
+      }
+    }
+
+    &-title {
+      font-size: 1rem;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    &-term {
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+  }
+
+  &-logo {
+    height: 100%;
+    max-height: 64px;
+  }
+
   &-button {
-    position: relative;
-    z-index: 1000;
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    //padding: 0 1.5ch;
-    padding: 0.25em 0.5em;
+    padding: 0.5em;
+    border-radius: var(--flinks-button-toolbar-radius);
     pointer-events: all;
-    //font-size: 0.75rem;
-    line-height: 1;
-    //width: 4ch;
-    //height: 2rem !important;
     transition: all 0.3s;
     text-decoration: none;
     background-color: var(--flinks-button-background);
@@ -35,89 +84,37 @@
       text-decoration: none;
     }
 
-    &:first-of-type {
-      border-start-start-radius: var(--flinks-button-toolbar-radius);
-      border-end-start-radius: var(--flinks-button-toolbar-radius);
-    }
-
-    &:last-of-type {
-      border-start-end-radius: var(--flinks-button-toolbar-radius);
-      border-end-end-radius: var(--flinks-button-toolbar-radius);
-    }
-
     &.fa-button {
-      --flinks-button-background: #006eca;
-      --flinks-button-background-hover: #{color.adjust(#006eca, $lightness: 15%)};
-      --flinks-button-color: #fdcc1a;
-      --flinks-button-color-hover: #{color.adjust(#fdcc1a, $lightness: 15%)};
+      $background: #006eca;
+      $color: #fdcc1a;
+      --flinks-button-background: #{$background};
+      --flinks-button-background-hover: #{color.adjust($background, $lightness: 15%)};
+      --flinks-button-color: #{$color};
+      --flinks-button-color-hover: #{color.adjust($color, $lightness: 10%)};
     }
 
     &.imdb-button {
-      --flinks-button-background: #f5c518;
-      --flinks-button-background-hover: #{color.adjust(#f5c518, $lightness: 15%)};
-      --flinks-button-color: #000000;
-      --flinks-button-color-hover: #{color.adjust(#000000, $lightness: 15%)};
+      $background: #f5c518;
+      $color: #000000;
+      --flinks-button-background: #{$background};
+      --flinks-button-background-hover: #{color.adjust($background, $lightness: 15%)};
+      --flinks-button-color: #{$color};
+      --flinks-button-color-hover: #{color.adjust($color, $lightness: 10%)};
     }
 
     &.letterboxd-button {
-      --flinks-button-background: #00e054;
-      --flinks-button-background-hover: #{color.adjust(#00e054, $lightness: 15%)};
-      --flinks-button-color: #202830;
-      --flinks-button-color-hover: #{color.adjust(#202830, $lightness: 15%)};
-    }
-  }
-
-  &-toolbar {
-    position: relative;
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-    display: flex;
-    width: fit-content;
-    margin-right: 0.25rem;
-    margin-left: 0.25rem;
-    margin-bottom: 0.25rem;
-    border-radius: var(--flinks-button-toolbar-radius);
-    font-size: clamp(12px, 1em, 32px);
-    font-weight: 700 !important;
-    //gap: 0.125rem;
-
-    &.inline {
-      display: inline-flex !important;
-      //margin: 0 0.25rem 0 0;
-      //padding: 0.65rem 1rem;
-      //font-size: 0.75em;
-      //width: 3ch;
-      //height: 1.5em !important;
-    }
-
-    &.tabs {
-      box-shadow: none;
-      padding: 0 0.5rem;
-      margin: 0;
-      border-radius: 0;
-
-      .filminlinks-button {
-        &:first-of-type {
-          border-end-start-radius: 0;
-        }
-
-        &:last-of-type {
-          border-end-end-radius: 0;
-        }
-      }
+      $background: #00e054;
+      $color: #202830;
+      --flinks-button-background: #{$background};
+      --flinks-button-background-hover: #{color.adjust($background, $lightness: 15%)};
+      --flinks-button-color: #{$color};
+      --flinks-button-color-hover: #{color.adjust($color, $lightness: 10%)};
     }
   }
 }
 
-.card-media[data-unveil] {
-  .filminlinks-toolbar {
-    margin: 0;
-  }
-}
-
-.card-image[data-unveil] {
-  .filminlinks-toolbar {
-    @media (min-width: 992px) {
-      display: none;
-    }
-  }
+// Bugfixes
+h1.display-1,
+h2.display-1 {
+  width: fit-content;
 }

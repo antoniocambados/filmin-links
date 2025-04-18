@@ -1,27 +1,15 @@
 import './styles.scss'
-import manager, { Provider, ProviderManager, SearchType } from './provider/provider'
+import { SearchType } from './provider/provider'
+import { Toolbar, ToolbarElement } from './toolbar'
 
 // Usamos un WeakSet para asegurarnos de procesar cada elemento solo una vez.
 const processedElements = new WeakSet()
 
-const providerManager: ProviderManager = manager
-
-function makeButtonToolbar(searchTerm: string, searchType: SearchType, toolbarClasses: string[] = []): HTMLElement {
-  let toolbar: HTMLElement = document.createElement('div')
-  toolbar.classList.add('filminlinks-toolbar', ...toolbarClasses)
-
-  providerManager.all().forEach((provider: Provider) => {
-    toolbar.appendChild(provider.makeButton(provider.makeUrl(searchTerm, searchType)))
-  })
-
-  return toolbar
-}
-
 /**
  * Obtiene los elementos que están sin procesar.
  */
-function getUnprocessedElements(elements: NodeListOf<HTMLElement>): Array<HTMLElement> {
-  return Array.from(elements).filter((element: HTMLElement): boolean => !processedElements.has(element))
+function getUnprocessedElements(elements: NodeListOf<ToolbarElement>): Array<ToolbarElement> {
+  return Array.from(elements).filter((element: ToolbarElement): boolean => !processedElements.has(element))
 }
 
 /**
@@ -37,21 +25,18 @@ function processTitles(): void {
   )
   const players: NodeListOf<HTMLElement> = document.querySelectorAll(`.jwc-title-primary`)
 
-  getUnprocessedElements(titles).forEach((element: HTMLElement): void => {
-    const isElementInHero: boolean = !!element.closest("[class*='hero']")
-    const isElementInMediaHoverCard: boolean = !!element.closest('.MediaHoverCard')
+  getUnprocessedElements(titles).forEach((element: ToolbarElement): void => {
     const title: string = element.textContent?.trim() || ''
 
     if (!title) {
       return
     }
 
-    const extraClasses: string[] = isElementInHero || isElementInMediaHoverCard ? ['inline'] : []
-    element.prepend(makeButtonToolbar(title, SearchType.title, extraClasses))
+    element.toolbar = new Toolbar(element, title, SearchType.title)
     processedElements.add(element)
   })
 
-  getUnprocessedElements(cards).forEach((element: HTMLElement): void => {
+  getUnprocessedElements(cards).forEach((element: ToolbarElement): void => {
     const toolbar = element.querySelector('.card-options-controls')
     const titleEl = element.querySelector('.info-title')
     const title: string = titleEl?.textContent?.trim() || ''
@@ -60,30 +45,29 @@ function processTitles(): void {
       return
     }
 
-    toolbar.append(makeButtonToolbar(title, SearchType.title))
+    element.toolbar = new Toolbar(element, title, SearchType.title)
     processedElements.add(element)
   })
 
-  getUnprocessedElements(posters).forEach((element: HTMLElement): void => {
+  getUnprocessedElements(posters).forEach((element: ToolbarElement): void => {
     const title: string = element.getAttribute('data-track-property-media-title')?.trim() || ''
 
     if (!title) {
       return
     }
 
-    // element.append(makeButtonToolbar(title, SearchType.title))
-    element.insertAdjacentElement('beforebegin', makeButtonToolbar(title, SearchType.title, ['tabs']))
+    element.toolbar = new Toolbar(element, title, SearchType.title)
     processedElements.add(element)
   })
 
-  getUnprocessedElements(players).forEach((element: HTMLElement): void => {
+  getUnprocessedElements(players).forEach((element: ToolbarElement): void => {
     const title: string = element.textContent?.trim() || ''
 
     if (!title) {
       return
     }
 
-    element.prepend(makeButtonToolbar(title, SearchType.title, ['inline']))
+    element.toolbar = new Toolbar(element, title, SearchType.title)
     processedElements.add(element)
   })
 }
@@ -94,14 +78,14 @@ function processTitles(): void {
 function processDirectors(): void {
   const directors: NodeListOf<HTMLElement> = document.querySelectorAll(`[href^="/director"]`)
 
-  getUnprocessedElements(directors).forEach((element: HTMLElement): void => {
+  getUnprocessedElements(directors).forEach((element: ToolbarElement): void => {
     const director: string = element.textContent?.trim() || ''
 
     if (!director) {
       return
     }
 
-    element.insertAdjacentElement('beforebegin', makeButtonToolbar(director, SearchType.director, ['inline']))
+    element.toolbar = new Toolbar(element, director, SearchType.director)
     processedElements.add(element)
   })
 }
@@ -112,14 +96,14 @@ function processDirectors(): void {
 function processActors(): void {
   const actors: NodeListOf<HTMLElement> = document.querySelectorAll(`[href^="/actor"], [href^="/actriz"]`)
 
-  getUnprocessedElements(actors).forEach((element: HTMLElement): void => {
+  getUnprocessedElements(actors).forEach((element: ToolbarElement): void => {
     const actor: string = element.textContent?.trim() || ''
 
     if (!actor) {
       return
     }
 
-    element.insertAdjacentElement('beforebegin', makeButtonToolbar(actor, SearchType.cast, ['inline']))
+    element.toolbar = new Toolbar(element, actor, SearchType.cast)
     processedElements.add(element)
   })
 }
