@@ -1,8 +1,21 @@
 import './styles.scss'
-import { makeButton, makeUrl, SearchType } from './provider/filmaffinity'
+import manager, { Provider, ProviderManager, SearchType } from './provider/provider'
 
 // Usamos un WeakSet para asegurarnos de procesar cada elemento solo una vez.
 const processedElements = new WeakSet()
+
+const providerManager: ProviderManager = manager
+
+function makeButtonToolbar(searchTerm: string, searchType: SearchType, toolbarClasses: string[] = []): HTMLElement {
+  let toolbar: HTMLElement = document.createElement('div')
+  toolbar.classList.add('filminlinks-toolbar', ...toolbarClasses)
+
+  providerManager.all().forEach((provider: Provider) => {
+    toolbar.appendChild(provider.makeButton(provider.makeUrl(searchTerm, searchType)))
+  })
+
+  return toolbar
+}
 
 /**
  * Obtiene los elementos que están sin procesar.
@@ -33,8 +46,8 @@ function processTitles(): void {
       return
     }
 
-    const extraClass: string = isElementInHero || isElementInMediaHoverCard ? 'inline' : ''
-    element.prepend(makeButton(makeUrl(title, SearchType.title), extraClass))
+    const extraClasses: string[] = isElementInHero || isElementInMediaHoverCard ? ['inline'] : []
+    element.prepend(makeButtonToolbar(title, SearchType.title, extraClasses))
     processedElements.add(element)
   })
 
@@ -47,7 +60,7 @@ function processTitles(): void {
       return
     }
 
-    toolbar.append(makeButton(makeUrl(title, SearchType.title)))
+    toolbar.append(makeButtonToolbar(title, SearchType.title))
     processedElements.add(element)
   })
 
@@ -58,7 +71,8 @@ function processTitles(): void {
       return
     }
 
-    element.append(makeButton(makeUrl(title, SearchType.title)))
+    // element.append(makeButtonToolbar(title, SearchType.title))
+    element.insertAdjacentElement('beforebegin', makeButtonToolbar(title, SearchType.title, ['tabs']))
     processedElements.add(element)
   })
 
@@ -69,7 +83,7 @@ function processTitles(): void {
       return
     }
 
-    element.prepend(makeButton(makeUrl(title, SearchType.title), 'inline'))
+    element.prepend(makeButtonToolbar(title, SearchType.title, ['inline']))
     processedElements.add(element)
   })
 }
@@ -87,7 +101,7 @@ function processDirectors(): void {
       return
     }
 
-    element.insertAdjacentElement('beforebegin', makeButton(makeUrl(director, SearchType.director), 'inline'))
+    element.insertAdjacentElement('beforebegin', makeButtonToolbar(director, SearchType.director, ['inline']))
     processedElements.add(element)
   })
 }
@@ -105,7 +119,7 @@ function processActors(): void {
       return
     }
 
-    element.insertAdjacentElement('beforebegin', makeButton(makeUrl(actor, SearchType.cast), 'inline'))
+    element.insertAdjacentElement('beforebegin', makeButtonToolbar(actor, SearchType.cast, ['inline']))
     processedElements.add(element)
   })
 }
