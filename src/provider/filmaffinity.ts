@@ -4,7 +4,16 @@ export default class FilmaffinityProvider implements Provider {
   name: string = 'FilmAffinity'
 
   makeUrl(search: string, type: SearchType = SearchType.all): string {
-    return `https://www.filmaffinity.com/es/search.php?stext=${encodeURIComponent(search)}&stype=${type}`
+    switch (type) {
+      case SearchType.title:
+        return `https://www.filmaffinity.com/es/search.php?stype=title&stext=${encodeURIComponent(search)}`
+      case SearchType.cast:
+        return `https://www.filmaffinity.com/es/search.php?stype=cast&stext=${encodeURIComponent(search)}`
+      case SearchType.director:
+        return `https://www.filmaffinity.com/es/search.php?stype=name&stext=${encodeURIComponent(search)}`
+      case SearchType.all:
+        return `https://www.filmaffinity.com/es/search.php?stext=${encodeURIComponent(search)}`
+    }
   }
 
   makeButton(url: string, extraClasses: string[] = []): HTMLAnchorElement {
