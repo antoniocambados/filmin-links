@@ -1,5 +1,6 @@
 import FilmaffinityProvider from './filmaffinity'
 import ImdbProvider from './imdb'
+import LetterboxdProvider from './letterboxd'
 
 export enum SearchType {
   all = 'all',
@@ -60,5 +61,6 @@ const manager = new ProviderManager()
 
 manager.add(new FilmaffinityProvider())
 manager.add(new ImdbProvider())
+manager.add(new LetterboxdProvider())
 
 export default manager

@@ -58,6 +58,13 @@
       --flinks-button-color: #000000;
       --flinks-button-color-hover: #{color.adjust(#000000, $lightness: 15%)};
     }
+
+    &.letterboxd-button {
+      --flinks-button-background: #00e054;
+      --flinks-button-background-hover: #{color.adjust(#00e054, $lightness: 15%)};
+      --flinks-button-color: #202830;
+      --flinks-button-color-hover: #{color.adjust(#202830, $lightness: 15%)};
+    }
   }
 
   &-toolbar {
