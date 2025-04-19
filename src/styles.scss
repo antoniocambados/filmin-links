@@ -2,11 +2,13 @@
 @import 'tippy.js/dist/tippy.css';
 
 $filminBackground: #242432;
+$filminBackgroundAlt: color.adjust($filminBackground, $lightness: -5%);
 $filminColor: #02ffa1;
 $prefix: 'filminlinks';
 
 :root {
   --flinks-button-toolbar-background: #{$filminBackground};
+  --flinks-button-toolbar-background-alt: #{$filminBackgroundAlt};
   --flinks-button-toolbar-border: #{color.adjust($filminBackground, $lightness: 25%, $alpha: 0.8)};
   --flinks-button-toolbar-radius: 0.25rem;
   --flinks-button-toolbar-shadow: #{color.adjust($filminBackground, $lightness: -10%, $alpha: 0.8)};
@@ -20,6 +22,12 @@ $prefix: 'filminlinks';
 
 .tippy-box[data-theme~='#{$prefix}'] {
   background-color: var(--flinks-button-toolbar-background);
+  background: radial-gradient(
+      circle,
+      var(--flinks-button-toolbar-background) 25%,
+      var(--flinks-button-toolbar-background-alt) 100%
+    )
+    no-repeat;
   color: white;
   border: 1px solid var(--flinks-button-toolbar-border);
   box-shadow: 0 10px 20px -5px var(--flinks-button-toolbar-shadow);
