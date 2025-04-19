@@ -26,7 +26,10 @@
     "page": "options/options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "activeTab"],
+  "background": {
+    "scripts": ["background.js"]
+  },
   "browser_specific_settings": {
     "gecko": {
       "id": "filmin-links@antoniocambados.github.com"

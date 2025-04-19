@@ -37,10 +37,12 @@ export class Toolbar {
     const toolbar: HTMLElement = document.createElement('div')
     toolbar.classList.add('filminlinks-toolbar', ...this.toolbarClasses)
     const header: HTMLElement = this.#makeHeader()
-    toolbar.appendChild(header)
+    const footer: HTMLElement = this.#makeFooter()
 
     this.#makeButtons().then((buttons) => {
+      toolbar.appendChild(header)
       toolbar.appendChild(buttons)
+      toolbar.appendChild(footer)
 
       this.toolbar = tippy(this.element, {
         appendTo: () => document.body,
@@ -63,6 +65,14 @@ export class Toolbar {
     return row
   }
 
+  #makeFooter(): HTMLElement {
+    const row: HTMLElement = this.#makeRow()
+
+    row.appendChild(this.#makeSettings())
+
+    return row
+  }
+
   #makeTitle(): HTMLElement {
     const title: HTMLElement = document.createElement('div')
     title.innerHTML = `<p class="filminlinks-toolbar-title">Buscar...<br><span class="filminlinks-toolbar-term">${this.searchTerm}</span></p>`
@@ -79,6 +89,20 @@ export class Toolbar {
     img.classList.add('filminlinks-logo')
 
     return img
+  }
+
+  #makeSettings(): HTMLElement {
+    const button: HTMLElement = document.createElement('a')
+    button.setAttribute('href', '#')
+    button.classList.add('filminlinks-settings-button')
+    button.textContent = 'Configurar FilminLinks'
+
+    button.addEventListener('click', (event) => {
+      event.preventDefault()
+      chrome.runtime.sendMessage({ action: 'openOptions' })
+    })
+
+    return button
   }
 
   async #makeButtons(): Promise<HTMLElement> {
