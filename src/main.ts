@@ -1,15 +1,15 @@
 import './styles.scss'
 import { SearchType } from './provider/provider'
-import { Toolbar, ToolbarElement } from './toolbar'
+import { Popover, PopoverElement } from './popover'
 
 // Usamos un WeakSet para asegurarnos de procesar cada elemento solo una vez.
-const processedElements: Set<ToolbarElement> = new Set()
+const processedElements: Set<PopoverElement> = new Set()
 
 /**
  * Obtiene los elementos que están sin procesar.
  */
-function getUnprocessedElements(elements: NodeListOf<ToolbarElement>): Array<ToolbarElement> {
-  return Array.from(elements).filter((element: ToolbarElement): boolean => !processedElements.has(element))
+function getUnprocessedElements(elements: NodeListOf<PopoverElement>): Array<PopoverElement> {
+  return Array.from(elements).filter((element: PopoverElement): boolean => !processedElements.has(element))
 }
 
 /**
@@ -25,18 +25,18 @@ function processTitles(): void {
   )
   const players: NodeListOf<HTMLElement> = document.querySelectorAll(`.jwc-title-primary`)
 
-  getUnprocessedElements(titles).forEach((element: ToolbarElement): void => {
+  getUnprocessedElements(titles).forEach((element: PopoverElement): void => {
     const title: string = element.textContent?.trim() || ''
 
     if (!title) {
       return
     }
 
-    element.toolbar = new Toolbar(element, title, SearchType.title)
+    element.filminlinksPopover = new Popover(element, title, SearchType.title)
     processedElements.add(element)
   })
 
-  getUnprocessedElements(cards).forEach((element: ToolbarElement): void => {
+  getUnprocessedElements(cards).forEach((element: PopoverElement): void => {
     const toolbar = element.querySelector('.card-options-controls')
     const titleEl = element.querySelector('.info-title')
     const title: string = titleEl?.textContent?.trim() || ''
@@ -45,29 +45,29 @@ function processTitles(): void {
       return
     }
 
-    element.toolbar = new Toolbar(element, title, SearchType.title)
+    element.filminlinksPopover = new Popover(element, title, SearchType.title)
     processedElements.add(element)
   })
 
-  getUnprocessedElements(posters).forEach((element: ToolbarElement): void => {
+  getUnprocessedElements(posters).forEach((element: PopoverElement): void => {
     const title: string = element.getAttribute('data-track-property-media-title')?.trim() || ''
 
     if (!title) {
       return
     }
 
-    element.toolbar = new Toolbar(element, title, SearchType.title)
+    element.filminlinksPopover = new Popover(element, title, SearchType.title)
     processedElements.add(element)
   })
 
-  getUnprocessedElements(players).forEach((element: ToolbarElement): void => {
+  getUnprocessedElements(players).forEach((element: PopoverElement): void => {
     const title: string = element.textContent?.trim() || ''
 
     if (!title) {
       return
     }
 
-    element.toolbar = new Toolbar(element, title, SearchType.title)
+    element.filminlinksPopover = new Popover(element, title, SearchType.title)
     processedElements.add(element)
   })
 }
@@ -78,14 +78,14 @@ function processTitles(): void {
 function processDirectors(): void {
   const directors: NodeListOf<HTMLElement> = document.querySelectorAll(`[href^="/director"]`)
 
-  getUnprocessedElements(directors).forEach((element: ToolbarElement): void => {
+  getUnprocessedElements(directors).forEach((element: PopoverElement): void => {
     const director: string = element.textContent?.trim() || ''
 
     if (!director) {
       return
     }
 
-    element.toolbar = new Toolbar(element, director, SearchType.director)
+    element.filminlinksPopover = new Popover(element, director, SearchType.director)
     processedElements.add(element)
   })
 }
@@ -96,14 +96,14 @@ function processDirectors(): void {
 function processActors(): void {
   const actors: NodeListOf<HTMLElement> = document.querySelectorAll(`[href^="/actor"], [href^="/actriz"]`)
 
-  getUnprocessedElements(actors).forEach((element: ToolbarElement): void => {
+  getUnprocessedElements(actors).forEach((element: PopoverElement): void => {
     const actor: string = element.textContent?.trim() || ''
 
     if (!actor) {
       return
     }
 
-    element.toolbar = new Toolbar(element, actor, SearchType.cast)
+    element.filminlinksPopover = new Popover(element, actor, SearchType.cast)
     processedElements.add(element)
   })
 }
@@ -133,7 +133,7 @@ observer.observe(document.body, {
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === 'sync' && changes.enabledProviders) {
     processedElements.forEach((element) => {
-      element.toolbar?.rebuild()
+      element.filminlinksPopover?.rebuild()
     })
   }
 })

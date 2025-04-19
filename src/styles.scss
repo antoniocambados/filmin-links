@@ -7,11 +7,11 @@ $filminColor: #02ffa1;
 $prefix: 'filminlinks';
 
 :root {
-  --flinks-button-toolbar-background: #{$filminBackground};
-  --flinks-button-toolbar-background-alt: #{$filminBackgroundAlt};
-  --flinks-button-toolbar-border: #{color.adjust($filminBackground, $lightness: 25%, $alpha: 0.8)};
-  --flinks-button-toolbar-radius: 0.25rem;
-  --flinks-button-toolbar-shadow: #{color.adjust($filminBackground, $lightness: -10%, $alpha: 0.8)};
+  --flinks-button-popover-background: #{$filminBackground};
+  --flinks-button-popover-background-alt: #{$filminBackgroundAlt};
+  --flinks-button-popover-border: #{color.adjust($filminBackground, $lightness: 25%, $alpha: 0.8)};
+  --flinks-button-popover-radius: 0.25rem;
+  --flinks-button-popover-shadow: #{color.adjust($filminBackground, $lightness: -10%, $alpha: 0.8)};
   --flinks-button-background: #{color.adjust($filminBackground, $lightness: -20%)};
   --flinks-button-background-hover: #{color.adjust($filminBackground, $lightness: -5%)};
   --flinks-button-color: #{$filminColor};
@@ -21,30 +21,30 @@ $prefix: 'filminlinks';
 }
 
 .tippy-box[data-theme~='#{$prefix}'] {
-  background-color: var(--flinks-button-toolbar-background);
+  background-color: var(--flinks-button-popover-background);
   background: radial-gradient(
       circle,
-      var(--flinks-button-toolbar-background) 25%,
-      var(--flinks-button-toolbar-background-alt) 100%
+      var(--flinks-button-popover-background) 25%,
+      var(--flinks-button-popover-background-alt) 100%
     )
     no-repeat;
   color: white;
-  border: 1px solid var(--flinks-button-toolbar-border);
-  box-shadow: 0 10px 20px -5px var(--flinks-button-toolbar-shadow);
+  border: 1px solid var(--flinks-button-popover-border);
+  box-shadow: 0 10px 20px -5px var(--flinks-button-popover-shadow);
 
   .tippy-content {
     padding: 1rem;
   }
 
   .tippy-arrow {
-    color: var(--flinks-button-toolbar-background);
+    color: var(--flinks-button-popover-background);
   }
 }
 
 .#{$prefix} {
   font-size: 1rem;
 
-  &-toolbar {
+  &-popover {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -91,7 +91,7 @@ $prefix: 'filminlinks';
 
   &-button {
     padding: 0.5em;
-    border-radius: var(--flinks-button-toolbar-radius);
+    border-radius: var(--flinks-button-popover-radius);
     pointer-events: all;
     transition: all 0.3s;
     text-decoration: none;

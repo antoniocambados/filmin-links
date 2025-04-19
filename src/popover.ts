@@ -3,29 +3,29 @@ import manager, { AVAILABLE_PROVIDERS, Provider, ProviderManager, SearchType } f
 
 const providerManager: ProviderManager = manager
 
-export interface ToolbarElement extends HTMLElement {
-  toolbar?: Toolbar | undefined
+export interface PopoverElement extends HTMLElement {
+  filminlinksPopover?: Popover | undefined
 }
 
-export class Toolbar {
+export class Popover {
   private readonly element: HTMLElement
   private readonly searchTerm: string
   private readonly searchType: SearchType
-  private readonly toolbarClasses: string[] = []
-  private toolbar: any
+  private readonly popoverClasses: string[] = []
+  private popover: any
 
-  constructor(element: HTMLElement, searchTerm: string, searchType: SearchType, toolbarClasses: string[] = []) {
+  constructor(element: HTMLElement, searchTerm: string, searchType: SearchType, popoverClasses: string[] = []) {
     this.element = element
     this.searchTerm = searchTerm.trim()
     this.searchType = searchType
-    this.toolbarClasses = toolbarClasses
+    this.popoverClasses = popoverClasses
 
     this.#make()
   }
 
   destroy(): void {
-    this.toolbar.destroy()
-    this.toolbar = undefined
+    this.popover.destroy()
+    this.popover = undefined
   }
 
   rebuild(): void {
@@ -34,19 +34,19 @@ export class Toolbar {
   }
 
   #make(): void {
-    const toolbar: HTMLElement = document.createElement('div')
-    toolbar.classList.add('filminlinks-toolbar', ...this.toolbarClasses)
+    const popover: HTMLElement = document.createElement('div')
+    popover.classList.add('filminlinks-popover', ...this.popoverClasses)
     const header: HTMLElement = this.#makeHeader()
     const footer: HTMLElement = this.#makeFooter()
 
-    this.#makeButtons().then((buttons) => {
-      toolbar.appendChild(header)
-      toolbar.appendChild(buttons)
-      toolbar.appendChild(footer)
+    this.#makeToolbar().then((toolbar) => {
+      popover.appendChild(header)
+      popover.appendChild(toolbar)
+      popover.appendChild(footer)
 
-      this.toolbar = tippy(this.element, {
+      this.popover = tippy(this.element, {
         appendTo: () => document.body,
-        content: toolbar,
+        content: popover,
         allowHTML: true,
         interactive: true,
         theme: 'filminlinks',
@@ -75,7 +75,7 @@ export class Toolbar {
 
   #makeTitle(): HTMLElement {
     const title: HTMLElement = document.createElement('div')
-    title.innerHTML = `<p class="filminlinks-toolbar-title">Buscar...<br><span class="filminlinks-toolbar-term">${this.searchTerm}</span></p>`
+    title.innerHTML = `<p class="filminlinks-popover-title">Buscar...<br><span class="filminlinks-popover-term">${this.searchTerm}</span></p>`
 
     return title.firstElementChild as HTMLElement
   }
@@ -105,9 +105,9 @@ export class Toolbar {
     return button
   }
 
-  async #makeButtons(): Promise<HTMLElement> {
+  async #makeToolbar(): Promise<HTMLElement> {
     const row: HTMLElement = this.#makeRow()
-    row.classList.add('filminlinks-toolbar-row-center')
+    row.classList.add('filminlinks-popover-row-center')
 
     const providerNames = await this.#getEnabledProviders()
     const providers = providerManager.get(providerNames)
@@ -120,7 +120,7 @@ export class Toolbar {
 
   #makeRow(): HTMLElement {
     let row: HTMLElement = document.createElement('div')
-    row.classList.add('filminlinks-toolbar-row')
+    row.classList.add('filminlinks-popover-row')
 
     return row
   }
