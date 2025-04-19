@@ -39,6 +39,10 @@ $pageBackground: color.adjust($filminBackground, $lightness: -5%);
   }
 }
 
+body {
+  min-width: 400px;
+}
+
 :where(:root),
 :where(:host) {
   background: $pageBackground;
