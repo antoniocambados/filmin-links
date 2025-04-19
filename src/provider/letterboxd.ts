@@ -1,7 +1,21 @@
 import { Provider, SearchType } from './provider'
 
 export default class LetterboxdProvider implements Provider {
-  name: string = 'Letterboxd'
+  static getId(): string {
+    return 'letterboxd'
+  }
+
+  static getName(): string {
+    return 'Letterboxd'
+  }
+
+  getId(): string {
+    return LetterboxdProvider.getId()
+  }
+
+  getName(): string {
+    return LetterboxdProvider.getName()
+  }
 
   makeUrl(search: string, type: SearchType = SearchType.all): string {
     switch (type) {

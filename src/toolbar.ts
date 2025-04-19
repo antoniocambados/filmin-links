@@ -1,5 +1,5 @@
 import tippy from 'tippy.js'
-import manager, { Provider, ProviderManager, SearchType } from './provider/provider'
+import manager, { AVAILABLE_PROVIDERS, Provider, ProviderManager, SearchType } from './provider/provider'
 
 const providerManager: ProviderManager = manager
 
@@ -23,23 +23,36 @@ export class Toolbar {
     this.#make()
   }
 
+  destroy(): void {
+    this.toolbar.destroy()
+    this.toolbar = undefined
+  }
+
+  rebuild(): void {
+    this.destroy()
+    this.#make()
+  }
+
   #make(): void {
     const toolbar: HTMLElement = document.createElement('div')
     toolbar.classList.add('filminlinks-toolbar', ...this.toolbarClasses)
     const header: HTMLElement = this.#makeHeader()
-    const buttons: HTMLElement = this.#makeButtons()
+    const footer: HTMLElement = this.#makeFooter()
 
-    toolbar.appendChild(header)
-    toolbar.appendChild(buttons)
+    this.#makeButtons().then((buttons) => {
+      toolbar.appendChild(header)
+      toolbar.appendChild(buttons)
+      toolbar.appendChild(footer)
 
-    this.toolbar = tippy(this.element, {
-      appendTo: () => document.body,
-      content: toolbar,
-      allowHTML: true,
-      interactive: true,
-      theme: 'filminlinks',
-      arrow: false,
-      // trigger: 'click',
+      this.toolbar = tippy(this.element, {
+        appendTo: () => document.body,
+        content: toolbar,
+        allowHTML: true,
+        interactive: true,
+        theme: 'filminlinks',
+        arrow: false,
+        // trigger: 'click',
+      })
     })
   }
 
@@ -48,6 +61,14 @@ export class Toolbar {
 
     row.appendChild(this.#makeLogo())
     row.appendChild(this.#makeTitle())
+
+    return row
+  }
+
+  #makeFooter(): HTMLElement {
+    const row: HTMLElement = this.#makeRow()
+
+    row.appendChild(this.#makeSettings())
 
     return row
   }
@@ -70,12 +91,27 @@ export class Toolbar {
     return img
   }
 
-  #makeButtons(): HTMLElement {
-    const row: HTMLElement = this.#makeRow()
+  #makeSettings(): HTMLElement {
+    const button: HTMLElement = document.createElement('a')
+    button.setAttribute('href', '#')
+    button.classList.add('filminlinks-settings-button')
+    button.textContent = 'Configurar FilminLinks'
 
+    button.addEventListener('click', (event) => {
+      event.preventDefault()
+      chrome.runtime.sendMessage({ action: 'openOptions' })
+    })
+
+    return button
+  }
+
+  async #makeButtons(): Promise<HTMLElement> {
+    const row: HTMLElement = this.#makeRow()
     row.classList.add('filminlinks-toolbar-row-center')
 
-    providerManager.all().forEach((provider: Provider) => {
+    const providerNames = await this.#getEnabledProviders()
+    const providers = providerManager.get(providerNames)
+    providers.forEach((provider: Provider) => {
       row.appendChild(provider.makeButton(provider.makeUrl(this.searchTerm, this.searchType)))
     })
 
@@ -87,5 +123,10 @@ export class Toolbar {
     row.classList.add('filminlinks-toolbar-row')
 
     return row
+  }
+
+  async #getEnabledProviders(): Promise<string[]> {
+    const items = await chrome.storage.sync.get({ enabledProviders: AVAILABLE_PROVIDERS })
+    return items.enabledProviders
   }
 }

@@ -1,7 +1,21 @@
 import { Provider, SearchType } from './provider'
 
 export default class FilmaffinityProvider implements Provider {
-  name: string = 'FilmAffinity'
+  public static getId(): string {
+    return 'filmaffinity'
+  }
+
+  public static getName(): string {
+    return 'FilmAffinity'
+  }
+
+  getId(): string {
+    return FilmaffinityProvider.getId()
+  }
+
+  getName(): string {
+    return FilmaffinityProvider.getName()
+  }
 
   makeUrl(search: string, type: SearchType = SearchType.all): string {
     switch (type) {

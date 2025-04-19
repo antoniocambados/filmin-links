@@ -3,7 +3,7 @@ import { SearchType } from './provider/provider'
 import { Toolbar, ToolbarElement } from './toolbar'
 
 // Usamos un WeakSet para asegurarnos de procesar cada elemento solo una vez.
-const processedElements = new WeakSet()
+const processedElements: Set<ToolbarElement> = new Set()
 
 /**
  * Obtiene los elementos que están sin procesar.
@@ -128,4 +128,12 @@ const observer = new MutationObserver(() => {
 observer.observe(document.body, {
   childList: true,
   subtree: true,
+})
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (namespace === 'sync' && changes.enabledProviders) {
+    processedElements.forEach((element) => {
+      element.toolbar?.rebuild()
+    })
+  }
 })

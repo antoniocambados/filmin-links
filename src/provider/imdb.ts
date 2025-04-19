@@ -1,7 +1,21 @@
 import { Provider, SearchType } from './provider'
 
 export default class ImdbProvider implements Provider {
-  name: string = 'IMDb'
+  static getId(): string {
+    return 'imdb'
+  }
+
+  static getName(): string {
+    return 'IMDb'
+  }
+
+  getId(): string {
+    return ImdbProvider.getId()
+  }
+
+  getName(): string {
+    return ImdbProvider.getName()
+  }
 
   makeUrl(search: string, type: SearchType = SearchType.all): string {
     switch (type) {

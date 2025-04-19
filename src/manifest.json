@@ -21,5 +21,25 @@
       "resources": ["icons/full.svg"],
       "matches": ["*://*.filmin.es/*"]
     }
-  ]
+  ],
+  "action": {
+    "default_popup": "options/options.html",
+    "default_icon": {
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "permissions": ["storage", "activeTab"],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "filmin-links@antoniocambados.github.com"
+    }
+  }
 }

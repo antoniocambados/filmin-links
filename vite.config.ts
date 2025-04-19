@@ -4,28 +4,30 @@ import copy from 'rollup-plugin-copy'
 
 export default defineConfig({
   build: {
+    target: 'esnext',
     outDir: 'dist',
     sourcemap: true,
     minify: false,
     rollupOptions: {
-      // Especifica las entradas si tienes más de un punto de entrada.
       input: {
-        content: resolve(__dirname, 'src/main.ts')
-        // Puedes agregar más entradas si fuera necesario.
+        main: resolve(__dirname, 'src/main.ts'),
+        background: resolve(__dirname, 'src/background.ts'),
+        options: resolve(__dirname, 'src/options/options.ts')
       },
       output: {
-        entryFileNames: `main.js`,
+        entryFileNames: `[name].js`,
         assetFileNames: `assets/[name].[ext]`
       },
       plugins: [
         copy({
           targets: [
             { src: 'src/manifest.json', dest: 'dist' },
-            { src: 'src/icons', dest: 'dist' }
+            { src: 'src/icons', dest: 'dist' },
+            { src: 'src/options/options.html', dest: 'dist/options' }
           ],
           hook: 'writeBundle'
         })
       ]
     }
   }
-});
+})

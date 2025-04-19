@@ -1,0 +1,100 @@
+@use 'sass:color';
+@use '@picocss/pico/scss/pico';
+@use '@picocss/pico/scss/colors' as *;
+
+$filminBackground: #242432;
+$filminColor: #02ffa1;
+$pageBackground: color.adjust($filminBackground, $lightness: -5%);
+
+/* Orange color for light color scheme (Default) */
+/* Can be forced with data-theme="light" */
+[data-theme='light'],
+[data-theme='dark'],
+:root:not([data-theme='dark']),
+:host:not([data-theme='dark']) {
+  --pico-text-selection-color: #{rgba(color.adjust($filminColor, $lightness: 20%), 0.25)};
+  --pico-primary: #{$filminColor};
+  --pico-primary-background: #{color.adjust($filminColor, $lightness: -5%)};
+  --pico-primary-underline: #{rgba(color.adjust($filminColor, $lightness: 10%), 0.5)};
+  --pico-primary-hover: #{color.adjust($filminColor, $lightness: -10%)};
+  --pico-primary-hover-background: #{$filminColor};
+  --pico-primary-focus: #{rgba(color.adjust($filminColor, $lightness: 20%), 0.5)};
+  --pico-primary-inverse: #{$filminBackground};
+
+  --pico-icon-checkbox: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+  --pico-icon-minus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'%3E%3C/line%3E%3C/svg%3E");
+}
+
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme]),
+  :host:not([data-theme]) {
+    --pico-text-selection-color: #{rgba(color.adjust($filminColor, $lightness: 20%), 0.25)};
+    --pico-primary: #{$filminColor};
+    --pico-primary-background: #{color.adjust($filminColor, $lightness: -5%)};
+    --pico-primary-underline: #{rgba(color.adjust($filminColor, $lightness: 10%), 0.5)};
+    --pico-primary-hover: #{color.adjust($filminColor, $lightness: -10%)};
+    --pico-primary-hover-background: #{$filminColor};
+    --pico-primary-focus: #{rgba(color.adjust($filminColor, $lightness: 20%), 0.5)};
+    --pico-primary-inverse: #{$filminBackground};
+  }
+}
+
+body {
+  min-width: 400px;
+}
+
+:where(:root),
+:where(:host) {
+  background: $pageBackground;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  h1 {
+    margin: 0;
+  }
+
+  img {
+    height: 100%;
+    max-height: 64px;
+  }
+}
+
+#providers-list {
+  margin: 1rem 0;
+}
+
+.buttons {
+  margin-top: 2rem;
+
+  button {
+    margin-bottom: 0;
+  }
+}
+
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  border-radius: 4px;
+  animation: slide-in 0.3s ease-out;
+  background: $filminColor;
+  color: $filminBackground;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -14,6 +14,8 @@ $prefix: 'filminlinks';
   --flinks-button-background-hover: #{color.adjust($filminBackground, $lightness: -5%)};
   --flinks-button-color: #{$filminColor};
   --flinks-button-color-hover: #{color.adjust($filminColor, $lightness: 15%)};
+  --flinks-link-color: #{color.mix($filminBackground, white, 50%)};
+  --flinks-link-color-hover: #{$filminColor};
 }
 
 .tippy-box[data-theme~='#{$prefix}'] {
@@ -65,6 +67,18 @@ $prefix: 'filminlinks';
   &-logo {
     height: 100%;
     max-height: 64px;
+  }
+
+  &-settings-button {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--flinks-link-color);
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: var(--flinks-link-color-hover);
+    }
   }
 
   &-button {
