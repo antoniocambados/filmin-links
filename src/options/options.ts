@@ -3,8 +3,6 @@ import './options.scss'
 interface Provider {
   id: string
   name: string
-  description: string
-  icon?: string
 }
 
 interface ProviderSettings {
@@ -15,17 +13,14 @@ const AVAILABLE_PROVIDERS: Provider[] = [
   {
     id: 'filmaffinity',
     name: 'FilmAffinity',
-    description: 'Búsqueda de películas y valoraciones',
   },
   {
     id: 'imdb',
     name: 'IMDB',
-    description: 'Base de datos de películas internacional',
   },
   {
     id: 'letterboxd',
     name: 'Letterboxd',
-    description: 'Base de datos de películas internacional',
   },
 ]
 
@@ -39,7 +34,7 @@ class OptionsManager {
 
   constructor() {
     this.form = document.getElementById('options-form') as HTMLFormElement
-    this.providersList = document.querySelector('.providers-list') as HTMLDivElement
+    this.providersList = document.querySelector('#providers-list') as HTMLDivElement
     this.initializeForm()
   }
 
@@ -57,16 +52,13 @@ class OptionsManager {
     AVAILABLE_PROVIDERS.forEach((provider) => {
       const item = document.createElement('div')
       item.className = 'provider-item'
-
       item.innerHTML = `
         <label>
           <input type="checkbox"
                  name="provider-${provider.id}"
                  value="${provider.id}"
                  ${enabledProviders.includes(provider.id) ? 'checked' : ''}>
-          ${provider.icon ? `<img src="${provider.icon}" class="provider-icon" alt="">` : ''}
-          <span class="provider-name">${provider.name}</span>
-          <span class="provider-description">${provider.description}</span>
+          <strong>${provider.name}</strong>
         </label>
       `
 
@@ -127,7 +119,7 @@ class OptionsManager {
 
   private showSaveNotification(): void {
     const notification = document.createElement('div')
-    notification.className = 'notification success'
+    notification.className = 'notification'
     notification.textContent = 'Proveedores actualizados correctamente'
     document.body.appendChild(notification)
 
@@ -136,7 +128,7 @@ class OptionsManager {
 
   private showResetNotification(): void {
     const notification = document.createElement('div')
-    notification.className = 'notification info'
+    notification.className = 'notification'
     notification.textContent = 'Proveedores restaurados a valores predeterminados'
     document.body.appendChild(notification)
 

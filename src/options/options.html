@@ -3,24 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>Configuración de Proveedores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <link rel="stylesheet" href="/assets/options.css">
 </head>
 <body>
-<div class="container">
-  <h1>Proveedores de Enlaces</h1>
-  <p class="description">Selecciona los proveedores que quieres activar:</p>
+<main class="container">
+  <div class="title">
+    <img src="/icons/full.svg" alt="FilminLinks">
+    <h1>Filmin Links</h1>
+  </div>
 
   <form id="options-form">
-    <div class="providers-list">
+    <p>Selecciona los proveedores que quieres activar:</p>
+
+    <div id="providers-list">
       <!-- Los checkboxes se generarán dinámicamente via JavaScript -->
     </div>
 
-    <div class="buttons">
+    <div class="grid buttons">
       <button type="submit">Guardar</button>
-      <button type="reset">Restaurar valores predeterminados</button>
+      <button type="reset" class="secondary">Restaurar predeterminados</button>
     </div>
   </form>
-</div>
+</main>
 <script src="/options.js"></script>
 </body>
 </html>

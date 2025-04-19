@@ -16,6 +16,7 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "@picocss/pico": "^2.1.1",
     "tippy.js": "^6.3.7"
   }
 }
