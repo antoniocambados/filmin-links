@@ -9,8 +9,28 @@ export enum SearchType {
   cast = 'cast',
 }
 
+export const AVAILABLE_PROVIDERS: string[] = [
+  FilmaffinityProvider.getId(),
+  ImdbProvider.getId(),
+  LetterboxdProvider.getId(),
+]
+
 export interface Provider {
-  name: string
+  /**
+   * Obtiene un identificador único para el proveedor.
+   *
+   * @return {string} El identificador.
+   */
+  getId(): string
+
+  /**
+   * Obtiene un nombre para el proveedor.
+   *
+   * Por ejemplo, "FilmAffinity" o "IMDB" o "Letterboxd"
+   *
+   * @return {string} El nombre.
+   */
+  getName(): string
 
   /**
    * Construye la URL de búsqueda en Filmaffinity.
@@ -33,19 +53,19 @@ export class ProviderManager {
   private providers: Record<string, Provider> = {}
 
   add(provider: Provider): void {
-    this.providers[provider.name] = provider
+    this.providers[provider.getId()] = provider
   }
 
-  remove(name: string): void {
-    delete this.providers[name]
+  remove(id: string): void {
+    delete this.providers[id]
   }
 
   get(selectedProviders: string[]): Provider[] {
     let providers: Provider[] = []
 
-    selectedProviders.forEach((providerName: string): void => {
-      if (this.providers[providerName]) {
-        providers.push(this.providers[providerName])
+    selectedProviders.forEach((providerId: string): void => {
+      if (this.providers[providerId]) {
+        providers.push(this.providers[providerId])
       }
     })
 
@@ -54,6 +74,10 @@ export class ProviderManager {
 
   all(): Provider[] {
     return Object.values(this.providers)
+  }
+
+  reset(): void {
+    this.providers = {}
   }
 }
 
