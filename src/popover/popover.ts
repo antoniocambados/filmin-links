@@ -1,128 +1,7 @@
 import manager, { AVAILABLE_PROVIDERS, Provider, ProviderManager, SearchType } from '../provider/provider'
+import PopoverManager from './PopoverManager'
 
 const providerManager: ProviderManager = manager
-
-// Gestor centralizado de popovers
-class PopoverManager {
-  private static instance: PopoverManager
-  private popoverEl: HTMLElement
-  private currentTrigger: HTMLElement | null = null
-  private hideTimeoutId: number | null = null
-  private connectionArea: HTMLElement | null = null
-  private content: HTMLElement | null = null
-
-  private constructor() {
-    // Crear el contenedor del popover
-    this.popoverEl = document.createElement('div')
-    this.popoverEl.classList.add('filminlinks-popover-container')
-    this.popoverEl.style.position = 'absolute'
-    document.body.appendChild(this.popoverEl)
-
-    // Crear el área de conexión
-    this.connectionArea = document.createElement('div')
-    this.connectionArea.classList.add('filminlinks-connection-area')
-    this.connectionArea.style.position = 'absolute'
-    this.connectionArea.style.background = 'transparent'
-    this.connectionArea.style.pointerEvents = 'auto'
-    this.connectionArea.style.display = 'none'
-    document.body.appendChild(this.connectionArea)
-
-    // Inicializar eventos
-    this.popoverEl.addEventListener('mouseenter', () => this.cancelHideTimeout())
-    this.popoverEl.addEventListener('mouseleave', (event) => this.handleLeave(event))
-    this.connectionArea.addEventListener('mouseenter', () => this.cancelHideTimeout())
-    this.connectionArea.addEventListener('mouseleave', (event) => this.handleLeave(event))
-  }
-
-  public static getInstance(): PopoverManager {
-    if (!PopoverManager.instance) {
-      PopoverManager.instance = new PopoverManager()
-    }
-    return PopoverManager.instance
-  }
-
-  public showPopover(trigger: HTMLElement, content: HTMLElement): void {
-    // Cancelar cualquier timeout previo
-    this.cancelHideTimeout()
-
-    // Actualizar el trigger actual
-    this.currentTrigger = trigger
-
-    // Actualizar el contenido si es diferente
-    if (this.content !== content) {
-      this.content = content
-      this.popoverEl.innerHTML = ''
-      this.popoverEl.appendChild(content)
-    }
-
-    // Posicionar el popover
-    this.position()
-
-    // Mostrar el popover
-    this.popoverEl.classList.add('visible')
-    if (this.connectionArea) {
-      this.connectionArea.style.display = 'block'
-    }
-  }
-
-  private position(): void {
-    if (!this.currentTrigger) return
-
-    const rect = this.currentTrigger.getBoundingClientRect()
-    this.popoverEl.style.top = `${rect.bottom + window.scrollY + 5}px`
-    this.popoverEl.style.left = `${rect.left + window.scrollX}px`
-
-    // Actualizar el área de conexión
-    if (this.connectionArea) {
-      this.connectionArea.style.top = `${rect.bottom + window.scrollY}px`
-      this.connectionArea.style.left = `${rect.left + window.scrollX}px`
-      this.connectionArea.style.width = `${rect.width}px`
-      this.connectionArea.style.height = `${5}px`
-      this.connectionArea.style.zIndex = '9998'
-    }
-  }
-
-  private handleLeave(event: MouseEvent): void {
-    // Verificar si el cursor se mueve a otro elemento controlado
-    const relatedTarget = event.relatedTarget as HTMLElement
-
-    // Si el cursor se mueve al popover, al área de conexión, o a un trigger, no ocultar
-    if (
-      relatedTarget &&
-      (this.popoverEl.contains(relatedTarget) ||
-        (this.connectionArea && this.connectionArea.contains(relatedTarget)) ||
-        this.isMovingToAnotherTrigger(relatedTarget))
-    ) {
-      this.cancelHideTimeout()
-      return
-    }
-
-    this.scheduleHide()
-  }
-
-  private isMovingToAnotherTrigger(element: HTMLElement): boolean {
-    // Comprobar si el elemento tiene un popover asociado
-    return element.classList.contains('filminlinks-trigger')
-  }
-
-  private cancelHideTimeout(): void {
-    if (this.hideTimeoutId !== null) {
-      clearTimeout(this.hideTimeoutId)
-      this.hideTimeoutId = null
-    }
-  }
-
-  private scheduleHide(): void {
-    this.cancelHideTimeout()
-    this.hideTimeoutId = window.setTimeout(() => {
-      this.popoverEl.classList.remove('visible')
-      if (this.connectionArea) {
-        this.connectionArea.style.display = 'none'
-      }
-      this.hideTimeoutId = null
-    }, 300)
-  }
-}
 
 export interface PopoverElement extends HTMLElement {
   filminlinksPopover?: Popover | undefined
@@ -132,9 +11,9 @@ export class Popover {
   private readonly searchTerm: string
   private readonly searchType: SearchType
   private readonly popoverClasses: string[] = []
-  private trigger: HTMLElement
+  private readonly trigger: HTMLElement
+  private readonly popoverManager: PopoverManager
   private popoverContent: HTMLElement
-  private popoverManager: PopoverManager
 
   constructor(trigger: HTMLElement, searchTerm: string, searchType: SearchType, popoverClasses: string[] = []) {
     this.trigger = trigger
