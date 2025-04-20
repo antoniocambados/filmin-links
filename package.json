@@ -9,14 +9,13 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.315",
-    "prettier": "^2.8.3",
-    "rollup-plugin-copy": "^3.4.0",
-    "sass": "^1.58.0",
-    "typescript": "^4.8.4",
-    "vite": "^4.0.0"
+    "prettier": "^2.8.8",
+    "rollup-plugin-copy": "^3.5.0",
+    "sass": "^1.86.3",
+    "typescript": "^4.9.5",
+    "vite": "^6.3.2"
   },
   "dependencies": {
-    "@picocss/pico": "^2.1.1",
-    "tippy.js": "^6.3.7"
+    "@picocss/pico": "^2.1.1"
   }
 }
