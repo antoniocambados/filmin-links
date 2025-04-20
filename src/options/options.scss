@@ -4,6 +4,8 @@
 
 $filminBackground: #242432;
 $filminColor: #02ffa1;
+$notificationBackground: #ec7445;
+$notificationColor: #ffffff;
 $pageBackground: color.adjust($filminBackground, $lightness: -5%);
 
 /* Orange color for light color scheme (Default) */
@@ -40,7 +42,9 @@ $pageBackground: color.adjust($filminBackground, $lightness: -5%);
 }
 
 body {
-  min-width: 400px;
+  width: 100%;
+  max-width: 510px;
+  margin: 0 auto;
 }
 
 :where(:root),
@@ -71,6 +75,9 @@ body {
 
 .buttons {
   margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
   button {
     margin-bottom: 0;
@@ -84,8 +91,9 @@ body {
   padding: 12px 24px;
   border-radius: 4px;
   animation: slide-in 0.3s ease-out;
-  background: $filminColor;
-  color: $filminBackground;
+  background: $notificationBackground;
+  color: $notificationColor;
+  box-shadow: 0 5px 20px rgba($pageBackground, 0.5);
 }
 
 @keyframes slide-in {

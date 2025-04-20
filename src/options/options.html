@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <title>Configuración de Proveedores</title>
@@ -8,20 +8,30 @@
   <link rel="stylesheet" href="/assets/options.css">
 </head>
 <body>
-<main class="container">
+<main class="container-fluid">
   <div class="title">
     <img src="/icons/full.svg" alt="FilminLinks">
     <h1>Filmin Links</h1>
   </div>
 
   <form id="options-form">
-    <p>Selecciona los proveedores que quieres activar:</p>
-
     <div id="providers-list">
+      <label>Selecciona los proveedores que quieres activar:</label>
       <!-- Los checkboxes se generarán dinámicamente via JavaScript -->
     </div>
 
-    <div class="grid buttons">
+    <div>
+      <label for="popoverPosition">Posición preferida del popover:</label>
+      <select id="popoverPosition" name="popoverPosition">
+        <option value="top">Arriba</option>
+        <option value="bottom">Abajo</option>
+        <option value="left">Izquierda</option>
+        <option value="right">Derecha</option>
+      </select>
+      <small>La posición elegida se usará cuando sea posible. Si no hay espacio suficiente, se elegirá automáticamente otra posición.</small>
+    </div>
+
+    <div class="buttons">
       <button type="submit">Guardar</button>
       <button type="reset" class="secondary">Restaurar predeterminados</button>
     </div>

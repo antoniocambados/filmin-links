@@ -1,5 +1,5 @@
 // Posiciones posibles para el popover
-enum PopoverPosition {
+export enum PopoverPosition {
   TOP = 'top',
   BOTTOM = 'bottom',
   LEFT = 'left',
@@ -36,6 +36,9 @@ export default class PopoverManager {
     // Calcular el ancho de la barra de desplazamiento al inicio
     this.cachedScrollbarWidth = this.getScrollbarWidth()
 
+    // Cargar la posición preferida del usuario
+    this.loadPreferredPosition()
+
     // Inicializar eventos
     this.popoverEl.addEventListener('mouseenter', () => this.cancelHideTimeout())
     this.popoverEl.addEventListener('mouseleave', (event) => this.handleLeave(event))
@@ -62,6 +65,19 @@ export default class PopoverManager {
       },
       { passive: true },
     )
+
+    // Escuchar cambios en la configuración
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+      if (namespace === 'sync' && changes.popoverPosition) {
+        this.preferredPosition = changes.popoverPosition.newValue as PopoverPosition
+      }
+    })
+  }
+
+  private loadPreferredPosition(): void {
+    chrome.storage.sync.get({ popoverPosition: PopoverPosition.TOP }, (result) => {
+      this.preferredPosition = result.popoverPosition as PopoverPosition
+    })
   }
 
   public static getInstance(): PopoverManager {
@@ -69,6 +85,14 @@ export default class PopoverManager {
       PopoverManager.instance = new PopoverManager()
     }
     return PopoverManager.instance
+  }
+
+  public setPreferredPosition(position: PopoverPosition): void {
+    this.preferredPosition = position
+  }
+
+  public getPreferredPosition(): PopoverPosition {
+    return this.preferredPosition
   }
 
   public showPopover(trigger: HTMLElement, content: HTMLElement): void {

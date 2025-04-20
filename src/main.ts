@@ -131,9 +131,15 @@ observer.observe(document.body, {
 })
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === 'sync' && changes.enabledProviders) {
-    processedElements.forEach((element) => {
-      element.filminlinksPopover?.rebuild()
-    })
+  if (namespace === 'sync') {
+    // Si cambian los proveedores habilitados, reconstruir los popovers
+    if (changes.enabledProviders) {
+      processedElements.forEach((element) => {
+        element.filminlinksPopover?.rebuild()
+      })
+    }
+
+    // No necesitamos hacer nada específico si cambia la posición preferida
+    // PopoverManager ya escucha estos cambios directamente
   }
 })
