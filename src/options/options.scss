@@ -42,7 +42,8 @@ $pageBackground: color.adjust($filminBackground, $lightness: -5%);
 }
 
 body {
-  width: 320px;
+  min-width: 320px;
+  max-width: 520px;
   margin: 0 auto;
 }
 
