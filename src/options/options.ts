@@ -70,7 +70,7 @@ async function restoreDefaults(event: Event) {
   event.preventDefault()
 
   await chrome.storage.sync.set({
-    enabledProviders: AVAILABLE_PROVIDERS,
+    enabledProviders: AVAILABLE_PROVIDERS.map((p) => p.id),
     popoverPosition: DEFAULT_POPOVER_POSITION,
   })
 
@@ -83,6 +83,8 @@ async function restoreDefaults(event: Event) {
 
 // Función para crear checkboxes de proveedores
 function createProviderCheckboxes(enabledProviders: string[]) {
+  providersList.innerHTML = ''
+
   AVAILABLE_PROVIDERS.forEach((provider) => {
     const isChecked = enabledProviders.includes(provider.id)
 
@@ -108,7 +110,7 @@ function createProviderCheckboxes(enabledProviders: string[]) {
 // Función para cargar las opciones guardadas
 async function loadOptions() {
   const result = await chrome.storage.sync.get({
-    enabledProviders: AVAILABLE_PROVIDERS,
+    enabledProviders: AVAILABLE_PROVIDERS.map((p) => p.id),
     popoverPosition: PopoverPosition.TOP,
   })
 
