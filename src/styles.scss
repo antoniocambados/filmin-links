@@ -27,6 +27,7 @@ $prefix: 'filminlinks';
     pointer-events: none;
     z-index: 9999;
     min-width: 250px;
+    max-width: 380px;
     background-color: var(--flinks-button-popover-background);
     background: radial-gradient(
         circle,
