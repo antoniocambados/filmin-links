@@ -37,7 +37,9 @@
   },
   "permissions": ["storage", "activeTab"],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js"],
+    "service_worker": "background.js",
+    "type": "module"
   },
   "browser_specific_settings": {
     "gecko": {

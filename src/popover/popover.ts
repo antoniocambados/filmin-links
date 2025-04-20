@@ -121,7 +121,18 @@ export class Popover {
 
     button.addEventListener('click', (event) => {
       event.preventDefault()
-      chrome.runtime.sendMessage({ action: 'openOptions' })
+
+      try {
+        chrome.runtime.sendMessage({ action: 'openOptions' }).catch((error) => {
+          console.error('Error al enviar mensaje:', error)
+          // Plan alternativo: abrir opciones directamente si el mensaje falla
+          chrome.runtime.openOptionsPage()
+        })
+      } catch (e) {
+        console.error('Error al intentar enviar mensaje:', e)
+        // Plan alternativo si la API de mensajes falla por completo
+        chrome.runtime.openOptionsPage()
+      }
     })
 
     return button
