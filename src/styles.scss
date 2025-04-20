@@ -1,5 +1,4 @@
 @use 'sass:color';
-@import 'tippy.js/dist/tippy.css';
 
 $filminBackground: #242432;
 $filminBackgroundAlt: color.adjust($filminBackground, $lightness: -5%);
@@ -20,29 +19,45 @@ $prefix: 'filminlinks';
   --flinks-link-color-hover: #{$filminColor};
 }
 
-.tippy-box[data-theme~='#{$prefix}'] {
-  background-color: var(--flinks-button-popover-background);
-  background: radial-gradient(
-      circle,
-      var(--flinks-button-popover-background) 25%,
-      var(--flinks-button-popover-background-alt) 100%
-    )
-    no-repeat;
-  color: white;
-  border: 1px solid var(--flinks-button-popover-border);
-  box-shadow: 0 10px 20px -5px var(--flinks-button-popover-shadow);
-
-  .tippy-content {
-    padding: 1rem;
-  }
-
-  .tippy-arrow {
-    color: var(--flinks-button-popover-background);
-  }
-}
-
 .#{$prefix} {
   font-size: 1rem;
+
+  &-popover-container {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 9999;
+    width: 350px;
+    background-color: var(--flinks-button-popover-background);
+    background: radial-gradient(
+        circle,
+        var(--flinks-button-popover-background) 25%,
+        var(--flinks-button-popover-background-alt) 100%
+      )
+      no-repeat;
+    color: white;
+    border: 1px solid var(--flinks-button-popover-border);
+    border-radius: var(--flinks-button-popover-radius);
+    box-shadow: 0 10px 20px -5px var(--flinks-button-popover-shadow);
+    padding: 1rem;
+
+    &.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  }
+
+  // Área de conexión invisible
+  &-connection-area {
+    display: none; // Oculto por defecto, se muestra cuando el popover está visible
+  }
+
+  // Mejorar el comportamiento del trigger
+  &-trigger {
+    cursor: pointer;
+  }
 
   &-popover {
     display: flex;
