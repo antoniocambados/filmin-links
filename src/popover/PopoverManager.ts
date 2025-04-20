@@ -14,6 +14,8 @@ export default class PopoverManager {
   private readonly connectionArea: HTMLElement | null = null
   private content: HTMLElement | null = null
   private preferredPosition: PopoverPosition = PopoverPosition.TOP
+  // Propiedad para almacenar en caché el ancho de la barra de desplazamiento
+  private cachedScrollbarWidth: number = 0
 
   private constructor() {
     // Crear el contenedor del popover
@@ -31,6 +33,9 @@ export default class PopoverManager {
     this.connectionArea.style.display = 'none'
     document.body.appendChild(this.connectionArea)
 
+    // Calcular el ancho de la barra de desplazamiento al inicio
+    this.cachedScrollbarWidth = this.getScrollbarWidth()
+
     // Inicializar eventos
     this.popoverEl.addEventListener('mouseenter', () => this.cancelHideTimeout())
     this.popoverEl.addEventListener('mouseleave', (event) => this.handleLeave(event))
@@ -39,6 +44,9 @@ export default class PopoverManager {
 
     // Añadir listener de redimensionamiento de ventana
     window.addEventListener('resize', () => {
+      // Recalcular el ancho de la barra de desplazamiento
+      this.cachedScrollbarWidth = this.getScrollbarWidth()
+
       if (this.popoverEl.classList.contains('visible') && this.currentTrigger) {
         this.position()
       }
@@ -92,7 +100,8 @@ export default class PopoverManager {
 
     const triggerRect = this.currentTrigger.getBoundingClientRect()
     const popoverRect = this.popoverEl.getBoundingClientRect()
-    const viewportWidth = window.innerWidth
+    // Usar clientWidth en lugar de innerWidth para excluir la barra de desplazamiento
+    const viewportWidth = document.documentElement.clientWidth
     const viewportHeight = window.innerHeight
 
     // Resetear clases de posición
@@ -139,11 +148,14 @@ export default class PopoverManager {
     const spaceLeft = triggerRect.left
     const spaceRight = viewportWidth - triggerRect.right
 
-    // Comprobar si cabe en cada dirección
-    const fitsTop = popoverRect.height <= spaceTop
-    const fitsBottom = popoverRect.height <= spaceBottom
-    const fitsLeft = popoverRect.width <= spaceLeft
-    const fitsRight = popoverRect.width <= spaceRight
+    // Márgenes de seguridad
+    const margin = 20
+
+    // Comprobar si cabe en cada dirección con margen
+    const fitsTop = popoverRect.height + margin <= spaceTop
+    const fitsBottom = popoverRect.height + margin <= spaceBottom
+    const fitsLeft = popoverRect.width + margin <= spaceLeft
+    const fitsRight = popoverRect.width + margin <= spaceRight
 
     // Intentar usar la posición preferida si es posible
     if (this.preferredPosition === PopoverPosition.BOTTOM && fitsBottom) {
@@ -215,6 +227,8 @@ export default class PopoverManager {
 
   private adjustHorizontalPosition(popoverRect: DOMRect, viewportWidth: number): void {
     const margin = 10 // Margen de seguridad
+    const scrollbarWidth = this.cachedScrollbarWidth // Obtener el ancho de la barra de desplazamiento
+    const effectiveViewportWidth = viewportWidth // viewportWidth ya excluye la barra de desplazamiento (clientWidth)
     const currentLeft = parseInt(this.popoverEl.style.left, 10) - window.scrollX
 
     // Ajustar si se sale por la izquierda
@@ -223,8 +237,8 @@ export default class PopoverManager {
     }
 
     // Ajustar si se sale por la derecha
-    if (currentLeft + popoverRect.width > viewportWidth - margin) {
-      this.popoverEl.style.left = `${viewportWidth - popoverRect.width - margin + window.scrollX}px`
+    if (currentLeft + popoverRect.width > effectiveViewportWidth - margin) {
+      this.popoverEl.style.left = `${effectiveViewportWidth - popoverRect.width - margin + window.scrollX}px`
     }
   }
 
@@ -241,6 +255,35 @@ export default class PopoverManager {
     if (currentTop + popoverRect.height > viewportHeight - margin) {
       this.popoverEl.style.top = `${viewportHeight - popoverRect.height - margin + window.scrollY}px`
     }
+  }
+
+  // Método para calcular el ancho de la barra de desplazamiento
+  private getScrollbarWidth(): number {
+    // Comprobar si hay scroll vertical en la página
+    const hasVerticalScroll = document.body.scrollHeight > window.innerHeight
+
+    if (!hasVerticalScroll) {
+      return 0
+    }
+
+    // Método para calcular el ancho de la barra de desplazamiento
+    // 1. Crear un div con scroll
+    const outer = document.createElement('div')
+    outer.style.visibility = 'hidden'
+    outer.style.overflow = 'scroll'
+    document.body.appendChild(outer)
+
+    // 2. Crear un div interno
+    const inner = document.createElement('div')
+    outer.appendChild(inner)
+
+    // 3. Calcular la diferencia entre el ancho del div externo e interno
+    const scrollbarWidth = outer.offsetWidth - inner.offsetWidth
+
+    // 4. Eliminar los divs temporales
+    outer.parentNode?.removeChild(outer)
+
+    return scrollbarWidth
   }
 
   private updateConnectionArea(triggerRect: DOMRect, position: PopoverPosition): void {
