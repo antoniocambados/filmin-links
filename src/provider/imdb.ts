@@ -1,6 +1,6 @@
-import { Provider, SearchType } from './provider'
+import { AbstractProvider, Provider, SearchType } from './provider'
 
-export default class ImdbProvider implements Provider {
+export default class ImdbProvider extends AbstractProvider implements Provider {
   static getId(): string {
     return 'imdb'
   }
@@ -27,18 +27,5 @@ export default class ImdbProvider implements Provider {
       case SearchType.all:
         return `https://www.imdb.com/find/?q=${encodeURIComponent(search)}`
     }
-  }
-
-  makeButton(url: string, extraClasses: string[] = []): HTMLAnchorElement {
-    const link: HTMLAnchorElement = document.createElement('a')
-    const icon: HTMLSpanElement = document.createElement('span')
-    icon.textContent = 'IMDb'
-    link.appendChild(icon)
-    link.href = url
-    link.target = '_blank'
-    link.classList.add('filminlinks-button', 'imdb-button', ...extraClasses)
-    // Evita la propagación del evento click si el enlace está dentro de otro enlace.
-    link.addEventListener('click', (event): void => event.stopPropagation())
-    return link
   }
 }

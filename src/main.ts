@@ -1,6 +1,6 @@
 import './styles.scss'
-import { SearchType } from './provider/provider'
 import { Popover, PopoverElement } from './popover/popover'
+import { SearchType } from './provider/provider'
 
 // Usamos un WeakSet para asegurarnos de procesar cada elemento solo una vez.
 const processedElements: Set<PopoverElement> = new Set()

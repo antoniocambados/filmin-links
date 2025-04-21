@@ -1,6 +1,6 @@
-import { Provider, SearchType } from './provider'
+import { AbstractProvider, Provider, SearchType } from './provider'
 
-export default class FilmaffinityProvider implements Provider {
+export default class FilmaffinityProvider extends AbstractProvider implements Provider {
   public static getId(): string {
     return 'filmaffinity'
   }
@@ -28,18 +28,5 @@ export default class FilmaffinityProvider implements Provider {
       case SearchType.all:
         return `https://www.filmaffinity.com/es/search.php?stext=${encodeURIComponent(search)}`
     }
-  }
-
-  makeButton(url: string, extraClasses: string[] = []): HTMLAnchorElement {
-    const link: HTMLAnchorElement = document.createElement('a')
-    const icon: HTMLSpanElement = document.createElement('span')
-    icon.textContent = 'FilmAffinity'
-    link.appendChild(icon)
-    link.href = url
-    link.target = '_blank'
-    link.classList.add('filminlinks-button', 'fa-button', ...extraClasses)
-    // Evita la propagación del evento click si el enlace está dentro de otro enlace.
-    link.addEventListener('click', (event): void => event.stopPropagation())
-    return link
   }
 }

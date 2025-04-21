@@ -1,4 +1,3 @@
-// Posiciones posibles para el popover
 export enum PopoverPosition {
   TOP = 'top',
   BOTTOM = 'bottom',

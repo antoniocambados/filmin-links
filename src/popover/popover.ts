@@ -1,5 +1,6 @@
-import manager, { AVAILABLE_PROVIDERS, Provider, ProviderManager, SearchType } from '../provider/provider'
-import PopoverManager from './PopoverManager'
+import manager, { AVAILABLE_PROVIDERS, ProviderManager } from '../provider/provider-manager'
+import { Provider, SearchType } from '../provider/provider'
+import PopoverManager from './popover-manager'
 
 const providerManager: ProviderManager = manager
 

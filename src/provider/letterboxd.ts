@@ -1,6 +1,6 @@
-import { Provider, SearchType } from './provider'
+import { AbstractProvider, Provider, SearchType } from './provider'
 
-export default class LetterboxdProvider implements Provider {
+export default class LetterboxdProvider extends AbstractProvider implements Provider {
   static getId(): string {
     return 'letterboxd'
   }
@@ -28,19 +28,6 @@ export default class LetterboxdProvider implements Provider {
       case SearchType.all:
         return `https://letterboxd.com/search/${encodeURIComponent(search)}/`
     }
-  }
-
-  makeButton(url: string, extraClasses: string[] = []): HTMLAnchorElement {
-    const link: HTMLAnchorElement = document.createElement('a')
-    const icon: HTMLSpanElement = document.createElement('span')
-    icon.textContent = 'Letterboxd'
-    link.appendChild(icon)
-    link.href = url
-    link.target = '_blank'
-    link.classList.add('filminlinks-button', 'letterboxd-button', ...extraClasses)
-    // Evita la propagación del evento click si el enlace está dentro de otro enlace.
-    link.addEventListener('click', (event): void => event.stopPropagation())
-    return link
   }
 
   private slugify(text: string): string {
