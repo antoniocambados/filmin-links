@@ -1,3 +1,6 @@
+/**
+ * Define las posiciones posibles para mostrar el popover.
+ */
 export enum PopoverPosition {
   TOP = 'top',
   BOTTOM = 'bottom',
@@ -5,17 +8,35 @@ export enum PopoverPosition {
   RIGHT = 'right',
 }
 
+/**
+ * Gestor centralizado para controlar los popovers en la aplicación.
+ *
+ * Implementa el patrón Singleton para garantizar que solo exista una instancia
+ * que coordine la visualización y posicionamiento de todos los popovers.
+ */
 export default class PopoverManager {
   private static instance: PopoverManager
+  /** Elemento DOM principal que contiene el popover */
   private readonly popoverEl: HTMLElement
+  /** Elemento que actualmente tiene el popover activado */
   private currentTrigger: HTMLElement | null = null
+  /** Identificador del timeout para ocultar el popover */
   private hideTimeoutId: number | null = null
+  /** Área invisible que mantiene el popover visible cuando el ratón pasa entre el trigger y el popover */
   private readonly connectionArea: HTMLElement | null = null
+  /** Contenido actual del popover */
   private content: HTMLElement | null = null
+  /** Posición preferida configurada por el usuario */
   private preferredPosition: PopoverPosition = PopoverPosition.TOP
-  // Propiedad para almacenar en caché el ancho de la barra de desplazamiento
+  /** Propiedad para almacenar en caché el ancho de la barra de desplazamiento */
   private cachedScrollbarWidth: number = 0
 
+  /**
+   * Constructor privado que inicializa el gestor.
+   *
+   * Crea los elementos DOM necesarios y configura los eventos para
+   * manejar correctamente la visualización de los popovers.
+   */
   private constructor() {
     // Crear el contenedor del popover
     this.popoverEl = document.createElement('div')
@@ -73,12 +94,18 @@ export default class PopoverManager {
     })
   }
 
+  /**
+   * Carga la posición preferida del popover desde la configuración del usuario.
+   */
   private loadPreferredPosition(): void {
     chrome.storage.sync.get({ popoverPosition: PopoverPosition.TOP }, (result) => {
       this.preferredPosition = result.popoverPosition as PopoverPosition
     })
   }
 
+  /**
+   * Obtiene la única instancia del gestor de popovers.
+   */
   public static getInstance(): PopoverManager {
     if (!PopoverManager.instance) {
       PopoverManager.instance = new PopoverManager()
@@ -86,14 +113,28 @@ export default class PopoverManager {
     return PopoverManager.instance
   }
 
+  /**
+   * Establece la posición preferida para mostrar los popovers.
+   *
+   * @param position Posición deseada para mostrar los popovers
+   */
   public setPreferredPosition(position: PopoverPosition): void {
     this.preferredPosition = position
   }
 
+  /**
+   * Obtiene la posición preferida actual para los popovers.
+   */
   public getPreferredPosition(): PopoverPosition {
     return this.preferredPosition
   }
 
+  /**
+   * Muestra un popover junto al elemento trigger especificado.
+   *
+   * @param trigger Elemento DOM que activa el popover
+   * @param content Contenido HTML que se mostrará en el popover
+   */
   public showPopover(trigger: HTMLElement, content: HTMLElement): void {
     // Cancelar cualquier timeout previo
     this.cancelHideTimeout()
@@ -118,6 +159,9 @@ export default class PopoverManager {
     this.position()
   }
 
+  /**
+   * Calcula y aplica la mejor posición para el popover actual.
+   */
   private position(): void {
     if (!this.currentTrigger) return
 
@@ -159,6 +203,18 @@ export default class PopoverManager {
     this.updateConnectionArea(triggerRect, bestPosition)
   }
 
+  /**
+   * Determina la mejor posición para mostrar el popover.
+   *
+   * Calcula el espacio disponible en cada dirección y selecciona la posición
+   * que mejor se adapte al espacio disponible, considerando la preferencia del usuario.
+   *
+   * @param triggerRect Dimensiones y posición del elemento trigger
+   * @param popoverRect Dimensiones y posición del popover
+   * @param viewportWidth Ancho del viewport
+   * @param viewportHeight Alto del viewport
+   * @returns La posición óptima para mostrar el popover
+   */
   private calculateBestPosition(
     triggerRect: DOMRect,
     popoverRect: DOMRect,
@@ -212,6 +268,12 @@ export default class PopoverManager {
     return spaces[0].pos
   }
 
+  /**
+   * Posiciona el popover encima del elemento trigger.
+   *
+   * @param triggerRect Dimensiones y posición del elemento trigger
+   * @param popoverRect Dimensiones y posición del popover
+   */
   private positionTop(triggerRect: DOMRect, popoverRect: DOMRect): void {
     const left = triggerRect.left + triggerRect.width / 2 - popoverRect.width / 2
     const top = triggerRect.top - popoverRect.height - 5
@@ -221,6 +283,12 @@ export default class PopoverManager {
     this.popoverEl.classList.add('position-top')
   }
 
+  /**
+   * Posiciona el popover debajo del elemento trigger.
+   *
+   * @param triggerRect Dimensiones y posición del elemento trigger
+   * @param popoverRect Dimensiones y posición del popover
+   */
   private positionBottom(triggerRect: DOMRect, popoverRect: DOMRect): void {
     const left = triggerRect.left + triggerRect.width / 2 - popoverRect.width / 2
     const top = triggerRect.bottom + 5
@@ -230,6 +298,12 @@ export default class PopoverManager {
     this.popoverEl.classList.add('position-bottom')
   }
 
+  /**
+   * Posiciona el popover a la izquierda del elemento trigger.
+   *
+   * @param triggerRect Dimensiones y posición del elemento trigger
+   * @param popoverRect Dimensiones y posición del popover
+   */
   private positionLeft(triggerRect: DOMRect, popoverRect: DOMRect): void {
     const left = triggerRect.left - popoverRect.width - 5
     const top = triggerRect.top + triggerRect.height / 2 - popoverRect.height / 2
@@ -239,6 +313,12 @@ export default class PopoverManager {
     this.popoverEl.classList.add('position-left')
   }
 
+  /**
+   * Posiciona el popover a la derecha del elemento trigger.
+   *
+   * @param triggerRect Dimensiones y posición del elemento trigger
+   * @param popoverRect Dimensiones y posición del popover
+   */
   private positionRight(triggerRect: DOMRect, popoverRect: DOMRect): void {
     const left = triggerRect.right + 5
     const top = triggerRect.top + triggerRect.height / 2 - popoverRect.height / 2
@@ -248,6 +328,12 @@ export default class PopoverManager {
     this.popoverEl.classList.add('position-right')
   }
 
+  /**
+   * Ajusta la posición horizontal para evitar que el popover se salga del viewport.
+   *
+   * @param popoverRect Dimensiones y posición del popover
+   * @param viewportWidth Ancho del viewport
+   */
   private adjustHorizontalPosition(popoverRect: DOMRect, viewportWidth: number): void {
     const margin = 10 // Margen de seguridad
     const scrollbarWidth = this.cachedScrollbarWidth // Obtener el ancho de la barra de desplazamiento
@@ -265,6 +351,12 @@ export default class PopoverManager {
     }
   }
 
+  /**
+   * Ajusta la posición vertical para evitar que el popover se salga del viewport.
+   *
+   * @param popoverRect Dimensiones y posición del popover
+   * @param viewportHeight Alto del viewport
+   */
   private adjustVerticalPosition(popoverRect: DOMRect, viewportHeight: number): void {
     const margin = 10 // Margen de seguridad
     const currentTop = parseInt(this.popoverEl.style.top, 10) - window.scrollY
@@ -280,7 +372,12 @@ export default class PopoverManager {
     }
   }
 
-  // Método para calcular el ancho de la barra de desplazamiento
+  /**
+   * Calcula el ancho de la barra de desplazamiento del navegador.
+   *
+   * Crea elementos temporales para medir con precisión el ancho real
+   * de la barra de desplazamiento en el navegador actual.
+   */
   private getScrollbarWidth(): number {
     // Comprobar si hay scroll vertical en la página
     const hasVerticalScroll = document.body.scrollHeight > window.innerHeight
@@ -309,6 +406,15 @@ export default class PopoverManager {
     return scrollbarWidth
   }
 
+  /**
+   * Actualiza la posición del área de conexión entre el trigger y el popover.
+   *
+   * El área de conexión permite mantener el popover visible cuando el cursor
+   * se mueve entre el trigger y el popover.
+   *
+   * @param triggerRect Dimensiones y posición del elemento trigger
+   * @param position Posición actual del popover
+   */
   private updateConnectionArea(triggerRect: DOMRect, position: PopoverPosition): void {
     if (!this.connectionArea) return
 
@@ -340,7 +446,12 @@ export default class PopoverManager {
     }
   }
 
-  // Verificar si hay un MediaHoverCard superpuesto al trigger actual
+  /**
+   * Verifica si hay un MediaHoverCard superpuesto al trigger actual.
+   *
+   * Esto es útil para determinar si se debe mantener el popover visible
+   * cuando hay otros elementos flotantes en la página.
+   */
   private isMediaHoverCardOverlappingTrigger(): boolean {
     if (!this.currentTrigger) return false
 
@@ -368,6 +479,14 @@ export default class PopoverManager {
     return false
   }
 
+  /**
+   * Gestiona el evento cuando el cursor sale del popover o del área de conexión.
+   *
+   * Determina si debe ocultar el popover o mantenerlo visible según el destino
+   * al que se mueve el cursor.
+   *
+   * @param event Evento de ratón que contiene información sobre el movimiento
+   */
   private handleLeave(event: MouseEvent): void {
     this.cancelHideTimeout()
 
@@ -393,11 +512,20 @@ export default class PopoverManager {
     this.scheduleHide()
   }
 
+  /**
+   * Comprueba si el elemento al que se mueve el cursor es otro trigger.
+   *
+   * @param element Elemento DOM al que se mueve el cursor
+   * @returns true si el elemento es un trigger, false en caso contrario
+   */
   private isMovingToAnotherTrigger(element: HTMLElement): boolean {
     // Comprobar si el elemento tiene un popover asociado
     return element.classList.contains('filminlinks-trigger')
   }
 
+  /**
+   * Cancela cualquier timeout pendiente para ocultar el popover.
+   */
   private cancelHideTimeout(): void {
     if (this.hideTimeoutId !== null) {
       clearTimeout(this.hideTimeoutId)
@@ -405,6 +533,9 @@ export default class PopoverManager {
     }
   }
 
+  /**
+   * Programa la ocultación del popover después de un breve retraso.
+   */
   private scheduleHide(): void {
     this.cancelHideTimeout()
     this.hideTimeoutId = window.setTimeout(() => {

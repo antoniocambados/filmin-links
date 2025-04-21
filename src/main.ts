@@ -2,37 +2,89 @@ import './styles.scss'
 import { Popover, PopoverElement } from './popover/popover'
 import { SearchType } from './provider/provider'
 
-// Usamos un WeakSet para asegurarnos de procesar cada elemento solo una vez.
+/**
+ * Conjunto que almacena los elementos ya procesados para evitar duplicados.
+ * Usamos un Set para asegurarnos de procesar cada elemento solo una vez.
+ */
 const processedElements: Set<PopoverElement> = new Set()
 
 /**
  * Obtiene los elementos que están sin procesar.
+ *
+ * @param elements Lista de elementos DOM candidatos a procesar
+ * @returns Array con los elementos que aún no han sido procesados
  */
 function getUnprocessedElements(elements: NodeListOf<PopoverElement>): Array<PopoverElement> {
   return Array.from(elements).filter((element: PopoverElement): boolean => !processedElements.has(element))
 }
 
 /**
- * Validadores para diferentes tipos de enlaces
+ * Validadores para diferentes tipos de enlaces.
+ * Contiene funciones que determinan si una URL corresponde a un título, actor o director.
  */
 const validators = {
+  /**
+   * Verifica si un enlace corresponde a una película.
+   *
+   * @param link URL a validar
+   * @returns true si es un enlace a una película
+   */
   isTitleLink: (link: string): boolean => /^(https?:\/\/(www\.)?filmin\.es)?\/(pelicula)\//.test(link),
+
+  /**
+   * Verifica si un enlace corresponde a un actor o actriz.
+   *
+   * @param link URL a validar
+   * @returns true si es un enlace a un actor o actriz
+   */
   isCastLink: (link: string): boolean => /^(https?:\/\/(www\.)?filmin\.es)?\/(actor|actriz)\//.test(link),
+
+  /**
+   * Verifica si un enlace corresponde a un director o directora.
+   *
+   * @param link URL a validar
+   * @returns true si es un enlace a un director o directora
+   */
   isDirectorLink: (link: string): boolean => /^(https?:\/\/(www\.)?filmin\.es)?\/(directora?)\//.test(link),
 }
 
 /**
- * Extractores de texto para diferentes tipos de elementos
+ * Extractores de texto para diferentes tipos de elementos.
+ * Proporciona funciones para obtener el texto relevante de diferentes estructuras DOM.
  */
 const extractors = {
+  /**
+   * Extrae el texto contenido en un elemento.
+   *
+   * @param element Elemento DOM del que extraer el texto
+   * @returns Texto contenido en el elemento
+   */
   textContent: (element: HTMLElement): string => element.textContent?.trim() || '',
 
+  /**
+   * Extrae el título de una película desde un atributo de seguimiento.
+   *
+   * @param element Elemento DOM que contiene el atributo data-track-property-media-title
+   * @returns Título de la película
+   */
   dataTrackTitle: (element: HTMLElement): string =>
     element.getAttribute('data-track-property-media-title')?.trim() || '',
 
+  /**
+   * Extrae texto desde un atributo de seguimiento o del contenido del elemento.
+   *
+   * @param element Elemento DOM del que extraer el texto
+   * @returns Texto extraído del atributo o del contenido
+   */
   dataTrackContentOrText: (element: HTMLElement): string =>
     element.getAttribute('data-track-property-content-text')?.trim() || element.textContent?.trim() || '',
 
+  /**
+   * Extrae el título de una tarjeta de película.
+   *
+   * @param element Elemento DOM que contiene una tarjeta de película
+   * @returns Título de la película
+   */
   cardTitle: (element: HTMLElement): string => {
     const titleEl = element.querySelector('.info-title')
     return titleEl?.textContent?.trim() || ''
@@ -40,16 +92,26 @@ const extractors = {
 }
 
 /**
- * Configuración de los elementos a procesar
+ * Configuración de los elementos a procesar.
+ * Define cómo identificar y extraer información de diferentes elementos del DOM.
  */
 interface ElementConfig {
+  /** Selector CSS para identificar los elementos */
   selector: string
+  /** Función para extraer el texto relevante del elemento */
   extractor: (element: HTMLElement) => string
+  /** Función opcional para validar si el elemento debe ser procesado */
   validator?: (element: HTMLElement) => boolean
+  /** Tipo de búsqueda a realizar (título, director, reparto) */
   searchType: SearchType
+  /** Función opcional para determinar el elemento contenedor donde se mostrará el popover */
   container?: (element: HTMLElement) => HTMLElement
 }
 
+/**
+ * Lista de configuraciones para los diferentes tipos de elementos a procesar.
+ * Cada configuración define cómo identificar y extraer información de un tipo específico de elemento.
+ */
 const elementConfigs: ElementConfig[] = [
   // Configuraciones para títulos
   {
@@ -96,7 +158,12 @@ const elementConfigs: ElementConfig[] = [
 ]
 
 /**
- * Procesa los elementos según la configuración proporcionada
+ * Procesa los elementos según la configuración proporcionada.
+ *
+ * Busca elementos que coincidan con el selector de la configuración,
+ * extrae la información relevante y crea un popover para cada elemento.
+ *
+ * @param config Configuración que define cómo procesar los elementos
  */
 function processElementsByConfig(config: ElementConfig): void {
   const elements: NodeListOf<HTMLElement> = document.querySelectorAll(config.selector)
@@ -124,7 +191,10 @@ function processElementsByConfig(config: ElementConfig): void {
 }
 
 /**
- * Procesa todos los elementos
+ * Procesa todos los elementos configurados en la página.
+ *
+ * Aplica todas las configuraciones definidas para detectar y procesar
+ * los diferentes tipos de elementos (películas, directores, actores).
  */
 function processElements(): void {
   elementConfigs.forEach(processElementsByConfig)
@@ -133,7 +203,10 @@ function processElements(): void {
 // Procesamos los elementos existentes a la hora de cargar el script
 processElements()
 
-// Se configura un MutationObserver para detectar cambios en el DOM y procesar nuevos elementos.
+/**
+ * Observer que detecta cambios en el DOM para procesar nuevos elementos.
+ * Esto permite que la extensión funcione correctamente en páginas con carga dinámica.
+ */
 const observer = new MutationObserver((): void => {
   processElements()
 })
@@ -143,6 +216,10 @@ observer.observe(document.body, {
   subtree: true,
 })
 
+/**
+ * Listener para cambios en la configuración de la extensión.
+ * Permite actualizar los popovers cuando cambian las preferencias del usuario.
+ */
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === 'sync') {
     // Si cambian los proveedores habilitados, reconstruir los popovers

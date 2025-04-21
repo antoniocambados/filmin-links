@@ -1,5 +1,8 @@
 import { AbstractProvider, Provider, SearchType } from './provider'
 
+/**
+ * Proveedor de búsquedas para Letterboxd.
+ */
 export default class LetterboxdProvider extends AbstractProvider implements Provider {
   static getId(): string {
     return 'letterboxd'

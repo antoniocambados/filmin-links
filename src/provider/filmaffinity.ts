@@ -1,5 +1,8 @@
 import { AbstractProvider, Provider, SearchType } from './provider'
 
+/**
+ * Proveedor de búsquedas para Filmaffinity.
+ */
 export default class FilmaffinityProvider extends AbstractProvider implements Provider {
   public static getId(): string {
     return 'filmaffinity'

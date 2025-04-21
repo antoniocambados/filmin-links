@@ -1,5 +1,8 @@
 import { AbstractProvider, Provider, SearchType } from './provider'
 
+/**
+ * Proveedor de búsquedas para IMDb.
+ */
 export default class ImdbProvider extends AbstractProvider implements Provider {
   static getId(): string {
     return 'imdb'

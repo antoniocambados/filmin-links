@@ -1,10 +1,18 @@
 import './options.scss'
 
+/**
+ * Interfaz que define la estructura de un proveedor de búsqueda.
+ */
 interface Provider {
+  /** Identificador único del proveedor */
   id: string
+  /** Nombre visible del proveedor */
   name: string
 }
 
+/**
+ * Posiciones disponibles para mostrar el popover.
+ */
 const PopoverPosition = {
   TOP: 'top',
   BOTTOM: 'bottom',
@@ -33,7 +41,14 @@ const form = document.getElementById('options-form') as HTMLFormElement
 const providersList = document.getElementById('providers-list') as HTMLDivElement
 const positionSelect = document.getElementById('popoverPosition') as HTMLSelectElement
 
-// Función para guardar las opciones
+/**
+ * Guarda las opciones seleccionadas por el usuario.
+ *
+ * Recoge los valores actuales del formulario y los almacena
+ * en la configuración sincronizada de Chrome.
+ *
+ * @param event Evento del formulario
+ */
 async function saveOptions(event: Event) {
   event.preventDefault()
 
@@ -55,7 +70,11 @@ async function saveOptions(event: Event) {
   showFeedback('Opciones guardadas correctamente')
 }
 
-// Función para mostrar un mensaje de feedback
+/**
+ * Muestra un mensaje de notificación temporal.
+ *
+ * @param message Texto a mostrar en la notificación
+ */
 function showFeedback(message: string) {
   const notification = document.createElement('div')
   notification.className = 'notification'
@@ -65,7 +84,14 @@ function showFeedback(message: string) {
   setTimeout(() => notification.remove(), 3000)
 }
 
-// Función para restaurar valores predeterminados
+/**
+ * Restaura las opciones a sus valores predeterminados.
+ *
+ * Restablece tanto la configuración almacenada como la
+ * interfaz de usuario a los valores iniciales.
+ *
+ * @param event Evento del botón de reset
+ */
 async function restoreDefaults(event: Event) {
   event.preventDefault()
 
@@ -81,7 +107,14 @@ async function restoreDefaults(event: Event) {
   showFeedback('Valores predeterminados restaurados')
 }
 
-// Función para crear checkboxes de proveedores
+/**
+ * Crea los checkboxes para cada proveedor disponible.
+ *
+ * Genera dinámicamente la lista de proveedores y marca como
+ * seleccionados los que están actualmente habilitados.
+ *
+ * @param enabledProviders Lista de IDs de proveedores habilitados
+ */
 function createProviderCheckboxes(enabledProviders: string[]) {
   providersList.innerHTML = ''
 
@@ -107,7 +140,12 @@ function createProviderCheckboxes(enabledProviders: string[]) {
   })
 }
 
-// Función para cargar las opciones guardadas
+/**
+ * Carga las opciones guardadas y actualiza la interfaz.
+ *
+ * Recupera la configuración del almacenamiento de Chrome y
+ * configura los controles del formulario según los valores guardados.
+ */
 async function loadOptions() {
   const result = await chrome.storage.sync.get({
     enabledProviders: AVAILABLE_PROVIDERS.map((p) => p.id),
