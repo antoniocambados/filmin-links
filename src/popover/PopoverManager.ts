@@ -341,7 +341,42 @@ export default class PopoverManager {
     }
   }
 
+  // Verificar si hay un MediaHoverCard superpuesto al trigger actual
+  private isMediaHoverCardOverlappingTrigger(): boolean {
+    if (!this.currentTrigger) return false
+
+    const triggerRect = this.currentTrigger.getBoundingClientRect()
+    const mediaHoverCards = document.querySelectorAll('.MediaHoverCard')
+
+    for (let i = 0; i < mediaHoverCards.length; i++) {
+      const card = mediaHoverCards[i] as HTMLElement
+      if (card.style.display === 'none') continue
+
+      const cardRect = card.getBoundingClientRect()
+
+      // Verificar si hay superposición entre los rectángulos
+      if (
+        !(
+          cardRect.right < triggerRect.left ||
+          cardRect.left > triggerRect.right ||
+          cardRect.bottom < triggerRect.top ||
+          cardRect.top > triggerRect.bottom
+        )
+      ) {
+        return true
+      }
+    }
+    return false
+  }
+
   private handleLeave(event: MouseEvent): void {
+    this.cancelHideTimeout()
+
+    // Si hay un MediaHoverCard superpuesto al trigger, no ocultar
+    if (this.isMediaHoverCardOverlappingTrigger()) {
+      return
+    }
+
     // Verificar si el cursor se mueve a otro elemento controlado
     const relatedTarget = event.relatedTarget as HTMLElement
 

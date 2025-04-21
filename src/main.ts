@@ -17,7 +17,7 @@ function getUnprocessedElements(elements: NodeListOf<PopoverElement>): Array<Pop
  */
 function processTitles(): void {
   const titles: NodeListOf<HTMLElement> = document.querySelectorAll(
-    `h1[itemprop=name], h1.display-1, h2.display-1, .card .info-title, .MediaHoverCard__summary__title`,
+    `h1[itemprop=name], h1.display-1, h2.display-1, .card .info-title`,
   )
   const cards: NodeListOf<HTMLElement> = document.querySelectorAll(`.card`)
   const posters: NodeListOf<HTMLElement> = document.querySelectorAll(

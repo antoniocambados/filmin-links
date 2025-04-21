@@ -1,8 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Filmin Links",
-  "version": "1.0",
-  "description": "Añade enlaces de FilmAffinity a Filmin. Encontrarás enlaces en títulos de películas, series, directores y reparto.",
+  "short_name": "FLinks",
+  "version": "1.0.0",
+  "description": "Tu puente entre Filmin y el universo cinematográfico",
+  "author": "Antonio Cambados",
+  "homepage_url": "https://github.com/antoniocambados/filmin-links",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
