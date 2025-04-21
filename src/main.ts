@@ -12,160 +12,113 @@ function getUnprocessedElements(elements: NodeListOf<PopoverElement>): Array<Pop
   return Array.from(elements).filter((element: PopoverElement): boolean => !processedElements.has(element))
 }
 
-function isTitleLink(link: string): boolean {
-  return /^(https?:\/\/(www\.)?filmin\.es)?\/(pelicula)\//.test(link)
-}
-
-function isCastLink(link: string): boolean {
-  return /^(https?:\/\/(www\.)?filmin\.es)?\/(actor|actriz)\//.test(link)
-}
-
-function isDirectorLink(link: string): boolean {
-  return /^(https?:\/\/(www\.)?filmin\.es)?\/(directora?)\//.test(link)
+/**
+ * Validadores para diferentes tipos de enlaces
+ */
+const validators = {
+  isTitleLink: (link: string): boolean => /^(https?:\/\/(www\.)?filmin\.es)?\/(pelicula)\//.test(link),
+  isCastLink: (link: string): boolean => /^(https?:\/\/(www\.)?filmin\.es)?\/(actor|actriz)\//.test(link),
+  isDirectorLink: (link: string): boolean => /^(https?:\/\/(www\.)?filmin\.es)?\/(directora?)\//.test(link),
 }
 
 /**
- * Procesa los elementos de tipo "título" (aka película/corto/serie/obra).
+ * Extractores de texto para diferentes tipos de elementos
  */
-function processTitles(): void {
-  const titles: NodeListOf<HTMLElement> = document.querySelectorAll(
-    `h1[itemprop=name], h1.display-1, h2.display-1, .card .info-title`,
-  )
-  const cards: NodeListOf<HTMLElement> = document.querySelectorAll(`.card`)
-  const posters: NodeListOf<HTMLElement> = document.querySelectorAll(
-    `[data-track-property-content-id="media_poster"], [data-track-property-content-id="media_card"]`,
-  )
-  const widlcardVerticalCoverArts: NodeListOf<HTMLElement> = document.querySelectorAll(
-    `[data-track-property-content-id="wildcard_vertical_coverart"]`,
-  )
-  const comingSoonItems: NodeListOf<HTMLElement> = document.querySelectorAll(
-    `[data-track-property-content-id="custom_block_trailers_media_title"]`,
-  )
-  const players: NodeListOf<HTMLElement> = document.querySelectorAll(`.jwc-title-primary`)
+const extractors = {
+  textContent: (element: HTMLElement): string => element.textContent?.trim() || '',
 
-  getUnprocessedElements(titles).forEach((element: PopoverElement): void => {
-    const title: string = element.textContent?.trim() || ''
+  dataTrackTitle: (element: HTMLElement): string =>
+    element.getAttribute('data-track-property-media-title')?.trim() || '',
 
-    if (!title) {
-      return
-    }
+  dataTrackContentOrText: (element: HTMLElement): string =>
+    element.getAttribute('data-track-property-content-text')?.trim() || element.textContent?.trim() || '',
 
-    element.filminlinksPopover = new Popover(element, title, SearchType.title)
-    processedElements.add(element)
-  })
-
-  getUnprocessedElements(cards).forEach((element: PopoverElement): void => {
-    const toolbar = element.querySelector('.card-options-controls')
+  cardTitle: (element: HTMLElement): string => {
     const titleEl = element.querySelector('.info-title')
-    const title: string = titleEl?.textContent?.trim() || ''
-
-    if (!title || !toolbar) {
-      return
-    }
-
-    element.filminlinksPopover = new Popover(element, title, SearchType.title)
-    processedElements.add(element)
-  })
-
-  getUnprocessedElements(posters).forEach((element: PopoverElement): void => {
-    const title: string = element.getAttribute('data-track-property-media-title')?.trim() || ''
-
-    if (!title) {
-      return
-    }
-
-    element.filminlinksPopover = new Popover(element, title, SearchType.title)
-    processedElements.add(element)
-  })
-
-  getUnprocessedElements(widlcardVerticalCoverArts).forEach((element: PopoverElement): void => {
-    const href: string = element.getAttribute('href')?.trim() || ''
-    const title: string =
-      element.getAttribute('data-track-property-content-text')?.trim() || element.textContent?.trim() || ''
-
-    if (!title) {
-      return
-    }
-
-    // compara href contra una regex
-    if (!isTitleLink(href)) {
-      return
-    }
-
-    element.filminlinksPopover = new Popover(element, title, SearchType.title)
-    processedElements.add(element)
-  })
-
-  getUnprocessedElements(comingSoonItems).forEach((element: PopoverElement): void => {
-    const title: string =
-      element.getAttribute('data-track-property-content-text')?.trim() || element.textContent?.trim() || ''
-
-    if (!title) {
-      return
-    }
-
-    element.filminlinksPopover = new Popover(element, title, SearchType.title)
-    processedElements.add(element)
-  })
-
-  getUnprocessedElements(players).forEach((element: PopoverElement): void => {
-    const title: string = element.textContent?.trim() || ''
-
-    if (!title) {
-      return
-    }
-
-    element.filminlinksPopover = new Popover(element, title, SearchType.title)
-    processedElements.add(element)
-  })
+    return titleEl?.textContent?.trim() || ''
+  },
 }
 
 /**
- * Procesa los elementos de tipo "director"
+ * Configuración de los elementos a procesar
  */
-function processDirectors(): void {
-  const directorLinks: NodeListOf<HTMLElement> = document.querySelectorAll(`[href^="/director"]`)
-  const directorNames: NodeListOf<HTMLElement> = document.querySelectorAll(
-    `[data-mix-panel-section-type="Director"] h1`,
-  )
-
-  getUnprocessedElements(directorLinks).forEach((element: PopoverElement): void => {
-    const director: string = element.textContent?.trim() || ''
-
-    if (!director) {
-      return
-    }
-
-    element.filminlinksPopover = new Popover(element, director, SearchType.director)
-    processedElements.add(element)
-  })
-
-  getUnprocessedElements(directorNames).forEach((element: PopoverElement): void => {
-    const director: string = element.textContent?.trim() || ''
-
-    if (!director) {
-      return
-    }
-
-    element.filminlinksPopover = new Popover(element, director, SearchType.director)
-    processedElements.add(element)
-  })
+interface ElementConfig {
+  selector: string
+  extractor: (element: HTMLElement) => string
+  validator?: (element: HTMLElement) => boolean
+  searchType: SearchType
+  container?: (element: HTMLElement) => HTMLElement
 }
 
+const elementConfigs: ElementConfig[] = [
+  // Configuraciones para títulos
+  {
+    selector: 'h1[itemprop=name], h1.display-1, h2.display-1, .card .info-title, .jwc-title-primary',
+    extractor: extractors.textContent,
+    searchType: SearchType.title,
+  },
+  {
+    selector: '.card',
+    extractor: extractors.cardTitle,
+    validator: (element: HTMLElement): boolean => !!element.querySelector('.card-options-controls'),
+    searchType: SearchType.title,
+  },
+  {
+    selector: '[data-track-property-content-id="media_poster"], [data-track-property-content-id="media_card"]',
+    extractor: extractors.dataTrackTitle,
+    searchType: SearchType.title,
+  },
+  {
+    selector: '[data-track-property-content-id="wildcard_vertical_coverart"]',
+    extractor: extractors.dataTrackContentOrText,
+    validator: (element: HTMLElement): boolean => validators.isTitleLink(element.getAttribute('href')?.trim() || ''),
+    searchType: SearchType.title,
+  },
+  {
+    selector: '[data-track-property-content-id="custom_block_trailers_media_title"]',
+    extractor: extractors.dataTrackContentOrText,
+    searchType: SearchType.title,
+  },
+
+  // Configuraciones para directores
+  {
+    selector: '[href^="/director"], [data-mix-panel-section-type="Director"] h1',
+    extractor: extractors.textContent,
+    searchType: SearchType.director,
+  },
+
+  // Configuraciones para actores
+  {
+    selector: '[href^="/actor"], [href^="/actriz"]',
+    extractor: extractors.textContent,
+    searchType: SearchType.cast,
+  },
+]
+
 /**
- * Procesa los elementos de tipo "actor"
+ * Procesa los elementos según la configuración proporcionada
  */
-function processActors(): void {
-  const actors: NodeListOf<HTMLElement> = document.querySelectorAll(`[href^="/actor"], [href^="/actriz"]`)
+function processElementsByConfig(config: ElementConfig): void {
+  const elements: NodeListOf<HTMLElement> = document.querySelectorAll(config.selector)
+  const unprocessedElements: PopoverElement[] = getUnprocessedElements(elements)
 
-  getUnprocessedElements(actors).forEach((element: PopoverElement): void => {
-    const actor: string = element.textContent?.trim() || ''
-
-    if (!actor) {
+  unprocessedElements.forEach((element: PopoverElement): void => {
+    // Validar el elemento si hay una función validadora
+    if (config.validator && !config.validator(element)) {
       return
     }
 
-    element.filminlinksPopover = new Popover(element, actor, SearchType.cast)
+    // Extraer el texto
+    const text: string = config.extractor(element)
+    if (!text) {
+      return
+    }
+
+    // Determinar el elemento contenedor si se especifica
+    const targetElement: HTMLElement = config.container ? config.container(element) : element
+
+    // Crear el popover
+    element.filminlinksPopover = new Popover(targetElement, text, config.searchType)
     processedElements.add(element)
   })
 }
@@ -174,16 +127,14 @@ function processActors(): void {
  * Procesa todos los elementos
  */
 function processElements(): void {
-  processTitles()
-  processActors()
-  processDirectors()
+  elementConfigs.forEach(processElementsByConfig)
 }
 
 // Procesamos los elementos existentes a la hora de cargar el script
 processElements()
 
 // Se configura un MutationObserver para detectar cambios en el DOM y procesar nuevos elementos.
-const observer = new MutationObserver(() => {
+const observer = new MutationObserver((): void => {
   processElements()
 })
 
@@ -196,7 +147,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === 'sync') {
     // Si cambian los proveedores habilitados, reconstruir los popovers
     if (changes.enabledProviders) {
-      processedElements.forEach((element) => {
+      processedElements.forEach((element: PopoverElement): void => {
         element.filminlinksPopover?.rebuild()
       })
     }
