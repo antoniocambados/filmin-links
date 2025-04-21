@@ -97,7 +97,19 @@ export class Popover {
 
   private makeTitle(): HTMLElement {
     const title: HTMLElement = document.createElement('div')
-    title.innerHTML = `<p class="filminlinks-popover-title">Buscar...<br><span class="filminlinks-popover-term">${this.searchTerm}</span></p>`
+    let preTitleContent
+
+    if (this.searchType === SearchType.title) {
+      preTitleContent = 'Buscar título'
+    } else if (this.searchType === SearchType.director) {
+      preTitleContent = 'Buscar en dirección'
+    } else if (this.searchType === SearchType.cast) {
+      preTitleContent = 'Buscar en reparto'
+    } else {
+      preTitleContent = 'Buscar'
+    }
+
+    title.innerHTML = `<p class="filminlinks-popover-title">${preTitleContent}<br><span class="filminlinks-popover-term">${this.searchTerm}</span></p>`
 
     return title.firstElementChild as HTMLElement
   }
