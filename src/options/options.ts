@@ -28,16 +28,16 @@ const AVAILABLE_PROVIDERS: Provider[] = [
     name: 'FilmAffinity',
   },
   {
-    id: 'imdb',
-    name: 'IMDB',
-  },
-  {
     id: 'letterboxd',
     name: 'Letterboxd',
   },
   {
     id: 'rottentomatoes',
     name: 'Rotten Tomatoes',
+  },
+  {
+    id: 'imdb',
+    name: 'IMDB',
   },
 ]
 
