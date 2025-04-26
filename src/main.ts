@@ -1,4 +1,5 @@
 import './styles.scss'
+import Logger from './logger'
 import { Popover, PopoverElement } from './popover/popover'
 import { SearchType } from './provider/provider'
 
@@ -172,12 +173,14 @@ function processElementsByConfig(config: ElementConfig): void {
   unprocessedElements.forEach((element: PopoverElement): void => {
     // Validar el elemento si hay una función validadora
     if (config.validator && !config.validator(element)) {
+      Logger.warn('El elemento no cumple con los requisitos para ser procesado', element)
       return
     }
 
     // Extraer el texto
     const text: string = config.extractor(element)
     if (!text) {
+      Logger.warn('No se ha extraído texto para la búsqueda', element)
       return
     }
 
@@ -199,6 +202,8 @@ function processElementsByConfig(config: ElementConfig): void {
 function processElements(): void {
   elementConfigs.forEach(processElementsByConfig)
 }
+
+Logger.log('Iniciando...')
 
 // Procesamos los elementos existentes a la hora de cargar el script
 processElements()
