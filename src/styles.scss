@@ -197,7 +197,7 @@ $prefix: 'filminlinks';
       $background: #fa320a;
       $color: #ffffff;
       --flinks-button-background: #{$background};
-      --flinks-button-background-hover: #{color.adjust($background, $lightness: -15%)};
+      --flinks-button-background-hover: #{color.adjust($background, $lightness: 10%)};
       --flinks-button-color: #{$color};
       --flinks-button-color-hover: #{color.adjust($color, $lightness: 10%)};
     }
