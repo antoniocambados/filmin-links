@@ -99,7 +99,7 @@ export class Popover {
     const footer: HTMLElement = this.makeFooter()
 
     const toolbar = document.createElement('div')
-    toolbar.classList.add('filminlinks-popover-row', 'filminlinks-popover-row-center')
+    toolbar.classList.add('filminlinks-popover-row', 'filminlinks-popover-row-toolbar')
 
     popover.appendChild(header)
     popover.appendChild(toolbar)

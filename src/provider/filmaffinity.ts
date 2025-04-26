@@ -4,12 +4,16 @@ import { AbstractProvider, Provider, SearchType } from './provider'
  * Proveedor de búsquedas para Filmaffinity.
  */
 export default class FilmaffinityProvider extends AbstractProvider implements Provider {
-  public static getId(): string {
+  static getId(): string {
     return 'filmaffinity'
   }
 
-  public static getName(): string {
+  static getName(): string {
     return 'FilmAffinity'
+  }
+
+  static getIcon(): string {
+    return `${FilmaffinityProvider.getId()}.png`
   }
 
   getId(): string {
@@ -18,6 +22,10 @@ export default class FilmaffinityProvider extends AbstractProvider implements Pr
 
   getName(): string {
     return FilmaffinityProvider.getName()
+  }
+
+  getIcon(): string {
+    return FilmaffinityProvider.getIcon()
   }
 
   makeUrl(search: string, type: SearchType = SearchType.all): string {

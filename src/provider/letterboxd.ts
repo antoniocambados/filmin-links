@@ -12,12 +12,20 @@ export default class LetterboxdProvider extends AbstractProvider implements Prov
     return 'Letterboxd'
   }
 
+  static getIcon(): string {
+    return `${LetterboxdProvider.getId()}.svg`
+  }
+
   getId(): string {
     return LetterboxdProvider.getId()
   }
 
   getName(): string {
     return LetterboxdProvider.getName()
+  }
+
+  getIcon(): string {
+    return LetterboxdProvider.getIcon()
   }
 
   makeUrl(search: string, type: SearchType = SearchType.all): string {

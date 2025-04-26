@@ -103,8 +103,9 @@ $prefix: 'filminlinks';
       align-items: center;
       gap: 0.5em;
 
-      &-center {
+      &-toolbar {
         justify-content: center;
+        flex-wrap: wrap;
       }
     }
 
@@ -146,6 +147,10 @@ $prefix: 'filminlinks';
     background-color: var(--flinks-button-background);
     color: var(--flinks-button-color);
     font-size: 0.85em;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
 
     &:hover,
     &:active,
@@ -155,9 +160,15 @@ $prefix: 'filminlinks';
       text-decoration: none;
     }
 
+    &-icon {
+      width: 1.5em;
+      height: 1.5em;
+      vertical-align: middle;
+    }
+
     &.filmaffinity-button {
-      $background: #006eca;
-      $color: #fdcc1a;
+      $background: #447CAD;
+      $color: #ffffff;
       --flinks-button-background: #{$background};
       --flinks-button-background-hover: #{color.adjust($background, $lightness: 15%)};
       --flinks-button-color: #{$color};
@@ -174,8 +185,8 @@ $prefix: 'filminlinks';
     }
 
     &.letterboxd-button {
-      $background: #00e054;
-      $color: #202830;
+      $background: #456;
+      $color: #ffffff;
       --flinks-button-background: #{$background};
       --flinks-button-background-hover: #{color.adjust($background, $lightness: 15%)};
       --flinks-button-color: #{$color};

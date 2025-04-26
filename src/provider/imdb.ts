@@ -12,12 +12,20 @@ export default class ImdbProvider extends AbstractProvider implements Provider {
     return 'IMDb'
   }
 
+  static getIcon(): string {
+    return `${ImdbProvider.getId()}.svg`
+  }
+
   getId(): string {
     return ImdbProvider.getId()
   }
 
   getName(): string {
     return ImdbProvider.getName()
+  }
+
+  getIcon(): string {
+    return ImdbProvider.getIcon()
   }
 
   makeUrl(search: string, type: SearchType = SearchType.all): string {

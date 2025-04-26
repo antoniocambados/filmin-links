@@ -29,6 +29,11 @@ export interface Provider {
   getName(): string
 
   /**
+   * Devuelve el nombre del icono.
+   */
+  getIcon(): string
+
+  /**
    * Construye la URL de búsqueda específica para el proveedor.
    *
    * @param search Texto a buscar
@@ -52,12 +57,14 @@ export interface Provider {
 export abstract class AbstractProvider implements Provider {
   abstract getId(): string
   abstract getName(): string
+  abstract getIcon(): string
   abstract makeUrl(search: string, type: SearchType): string
 
   /**
    * Implementación por defecto para crear botones de enlace
    *
    * Crea elementos de enlace HTML con:
+   * - Un icono SVG basado en el ID del proveedor
    * - El nombre del proveedor como texto
    * - Clases CSS específicas del proveedor
    * - Apertura en nueva pestaña
@@ -65,13 +72,27 @@ export abstract class AbstractProvider implements Provider {
    */
   makeButton(url: string, extraClasses: string[] = []): HTMLAnchorElement {
     const link: HTMLAnchorElement = document.createElement('a')
-    const icon: HTMLSpanElement = document.createElement('span')
-    icon.textContent = this.getName()
+
+    // Crear el icono SVG
+    const icon: HTMLImageElement = document.createElement('img')
+    icon.src = chrome.runtime.getURL(`icons/provider/${this.getIcon()}`)
+    icon.alt = `${this.getName()} icon`
+    icon.classList.add('filminlinks-button-icon')
+
+    // Crear el elemento de texto
+    const name: HTMLSpanElement = document.createElement('span')
+    name.textContent = this.getName()
+
+    // Añadir icono y texto al enlace
     link.appendChild(icon)
+    link.appendChild(name)
+
+    // Configurar propiedades del enlace
     link.href = url
     link.target = '_blank'
     link.classList.add('filminlinks-button', `${this.getId()}-button`, ...extraClasses)
     link.addEventListener('click', (event): void => event.stopPropagation())
+
     return link
   }
 }
