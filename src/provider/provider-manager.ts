@@ -2,6 +2,7 @@ import { Provider } from './provider'
 import FilmaffinityProvider from './filmaffinity'
 import ImdbProvider from './imdb'
 import LetterboxdProvider from './letterboxd'
+import RottenTomatoesProvider from './rottentomatoes'
 
 /**
  * Lista de identificadores de todos los proveedores disponibles en la aplicación.
@@ -10,6 +11,7 @@ export const AVAILABLE_PROVIDERS: string[] = [
   FilmaffinityProvider.getId(),
   ImdbProvider.getId(),
   LetterboxdProvider.getId(),
+  RottenTomatoesProvider.getId(),
 ]
 
 /**
@@ -89,5 +91,6 @@ const manager = new ProviderManager()
 manager.add(new FilmaffinityProvider())
 manager.add(new ImdbProvider())
 manager.add(new LetterboxdProvider())
+manager.add(new RottenTomatoesProvider())
 
 export default manager

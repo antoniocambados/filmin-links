@@ -167,7 +167,7 @@ $prefix: 'filminlinks';
     }
 
     &.filmaffinity-button {
-      $background: #447CAD;
+      $background: #447cad;
       $color: #ffffff;
       --flinks-button-background: #{$background};
       --flinks-button-background-hover: #{color.adjust($background, $lightness: 15%)};
@@ -189,6 +189,15 @@ $prefix: 'filminlinks';
       $color: #ffffff;
       --flinks-button-background: #{$background};
       --flinks-button-background-hover: #{color.adjust($background, $lightness: 15%)};
+      --flinks-button-color: #{$color};
+      --flinks-button-color-hover: #{color.adjust($color, $lightness: 10%)};
+    }
+
+    &.rottentomatoes-button {
+      $background: #fa320a;
+      $color: #ffffff;
+      --flinks-button-background: #{$background};
+      --flinks-button-background-hover: #{color.adjust($background, $lightness: -15%)};
       --flinks-button-color: #{$color};
       --flinks-button-color-hover: #{color.adjust($color, $lightness: 10%)};
     }

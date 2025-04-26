@@ -34,6 +34,10 @@ const AVAILABLE_PROVIDERS: Provider[] = [
     id: 'letterboxd',
     name: 'Letterboxd',
   },
+  {
+    id: 'rottentomatoes',
+    name: 'Rotten Tomatoes',
+  },
 ]
 
 // DOM Elements
