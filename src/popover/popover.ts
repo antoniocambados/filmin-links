@@ -241,12 +241,33 @@ export class Popover {
   }
 
   /**
-   * Obtiene la lista de proveedores habilitados desde la configuración.
+   * Obtiene la lista de proveedores habilitados desde la configuración con el orden preferido.
    *
    * Si no hay configuración explícita, usa todos los proveedores disponibles.
    */
   private async getEnabledProviders(): Promise<string[]> {
-    const items = await chrome.storage.sync.get({ enabledProviders: AVAILABLE_PROVIDERS })
-    return items.enabledProviders
+    const defaultProviders = AVAILABLE_PROVIDERS
+
+    const items = await chrome.storage.sync.get({
+      enabledProviders: defaultProviders,
+      providersOrder: defaultProviders,
+    })
+
+    // Ordenar los proveedores habilitados según el orden definido
+    const enabledProviders = [...items.enabledProviders]
+
+    enabledProviders.sort((a, b) => {
+      const indexA = items.providersOrder.indexOf(a)
+      const indexB = items.providersOrder.indexOf(b)
+
+      // Si alguno no está en la lista de orden, mantener su posición relativa original
+      if (indexA === -1 && indexB === -1) return 0
+      if (indexA === -1) return 1
+      if (indexB === -1) return -1
+
+      return indexA - indexB
+    })
+
+    return enabledProviders
   }
 }

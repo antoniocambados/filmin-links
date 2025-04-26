@@ -1,4 +1,5 @@
 import './options.scss'
+import Sortable from 'sortablejs'
 
 /**
  * Interfaz que define la estructura de un proveedor de búsqueda.
@@ -48,18 +49,22 @@ const positionSelect = document.getElementById('popoverPosition') as HTMLSelectE
 /**
  * Guarda las opciones seleccionadas por el usuario.
  *
- * Recoge los valores actuales del formulario y los almacena
- * en la configuración sincronizada de Chrome.
- *
  * @param event Evento del formulario
  */
 async function saveOptions(event: Event) {
   event.preventDefault()
 
-  // Obtener los proveedores seleccionados
-  const enabledProviders = Array.from(
-    document.querySelectorAll<HTMLInputElement>('input[name="provider"]:checked'),
-  ).map((checkbox) => checkbox.value)
+  // Obtener los proveedores en el orden actual
+  const orderedProviders = Array.from(document.querySelectorAll<HTMLDivElement>('.provider-item')).map((item) => ({
+    id: item.dataset.providerId as string,
+    enabled: item.querySelector<HTMLInputElement>('input[type="checkbox"]')?.checked || false,
+  }))
+
+  // Extraer solo los IDs de proveedores habilitados
+  const enabledProviders = orderedProviders.filter((provider) => provider.enabled).map((provider) => provider.id)
+
+  // Guardar también el orden de todos los proveedores
+  const providersOrder = orderedProviders.map((provider) => provider.id)
 
   // Obtener la posición seleccionada
   const popoverPosition = positionSelect.value
@@ -67,6 +72,7 @@ async function saveOptions(event: Event) {
   // Guardar en storage
   await chrome.storage.sync.set({
     enabledProviders,
+    providersOrder,
     popoverPosition,
   })
 
@@ -99,8 +105,11 @@ function showFeedback(message: string) {
 async function restoreDefaults(event: Event) {
   event.preventDefault()
 
+  const defaultProvidersIds = AVAILABLE_PROVIDERS.map((p) => p.id)
+
   await chrome.storage.sync.set({
-    enabledProviders: AVAILABLE_PROVIDERS.map((p) => p.id),
+    enabledProviders: defaultProvidersIds,
+    providersOrder: defaultProvidersIds,
     popoverPosition: DEFAULT_POPOVER_POSITION,
   })
 
@@ -112,19 +121,43 @@ async function restoreDefaults(event: Event) {
 }
 
 /**
- * Crea los checkboxes para cada proveedor disponible.
- *
- * Genera dinámicamente la lista de proveedores y marca como
- * seleccionados los que están actualmente habilitados.
+ * Crea los elementos arrastrables para cada proveedor disponible.
  *
  * @param enabledProviders Lista de IDs de proveedores habilitados
+ * @param providersOrder Lista ordenada de IDs de proveedores
  */
-function createProviderCheckboxes(enabledProviders: string[]) {
+function createProviderItems(enabledProviders: string[], providersOrder: string[]) {
   providersList.innerHTML = ''
 
-  AVAILABLE_PROVIDERS.forEach((provider) => {
+  // Obtener los proveedores en el orden especificado
+  const orderedProviders = [...AVAILABLE_PROVIDERS]
+
+  // Ordenar los proveedores según providersOrder
+  orderedProviders.sort((a, b) => {
+    const indexA = providersOrder.indexOf(a.id)
+    const indexB = providersOrder.indexOf(b.id)
+
+    // Si alguno no está en la lista, ponerlo al final
+    if (indexA === -1) return 1
+    if (indexB === -1) return -1
+
+    return indexA - indexB
+  })
+
+  orderedProviders.forEach((provider) => {
     const isChecked = enabledProviders.includes(provider.id)
 
+    // Crear contenedor arrastrable
+    const item = document.createElement('div')
+    item.className = 'provider-item'
+    item.dataset.providerId = provider.id
+
+    // Agregar el handle para arrastrar
+    const dragHandle = document.createElement('div')
+    dragHandle.className = 'drag-handle'
+    dragHandle.innerHTML = '⋮⋮' // Icono de arrastre
+
+    // Crear el contenedor de checkbox y etiqueta
     const label = document.createElement('label')
     label.className = 'checkbox-container'
 
@@ -138,9 +171,29 @@ function createProviderCheckboxes(enabledProviders: string[]) {
     span.className = 'provider-name'
     span.textContent = provider.name
 
+    // Ensamblar el elemento
     label.appendChild(input)
     label.appendChild(span)
-    providersList.appendChild(label)
+    item.appendChild(dragHandle)
+    item.appendChild(label)
+    providersList.appendChild(item)
+  })
+
+  // Inicializar la funcionalidad de arrastrar y soltar
+  initDragAndDrop()
+}
+
+/**
+ * Inicializa la funcionalidad de arrastrar y soltar para los proveedores.
+ */
+function initDragAndDrop() {
+  // Inicializar Sortable en la lista de proveedores
+  Sortable.create(providersList, {
+    animation: 150,
+    handle: '.drag-handle',
+    ghostClass: 'sortable-ghost',
+    chosenClass: 'sortable-chosen',
+    dragClass: 'sortable-drag',
   })
 }
 
@@ -151,13 +204,16 @@ function createProviderCheckboxes(enabledProviders: string[]) {
  * configura los controles del formulario según los valores guardados.
  */
 async function loadOptions() {
+  const defaultProvidersIds = AVAILABLE_PROVIDERS.map((p) => p.id)
+
   const result = await chrome.storage.sync.get({
-    enabledProviders: AVAILABLE_PROVIDERS.map((p) => p.id),
+    enabledProviders: defaultProvidersIds,
+    providersOrder: defaultProvidersIds,
     popoverPosition: PopoverPosition.TOP,
   })
 
   // Establecer valores en la interfaz
-  createProviderCheckboxes(result.enabledProviders)
+  createProviderItems(result.enabledProviders, result.providersOrder)
   positionSelect.value = result.popoverPosition
 }
 
