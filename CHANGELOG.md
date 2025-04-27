@@ -2,7 +2,7 @@
 
 Todos los cambios notables en el proyecto "Filmin Links" serán documentados en este archivo.
 
-## [1.0.0] - 2024-06-01
+## [1.0.0] - 2025-04-27
 
 ### Lanzamiento inicial
 
