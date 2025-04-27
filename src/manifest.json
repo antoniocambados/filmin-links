@@ -3,6 +3,7 @@
   "name": "Filmin Links",
   "short_name": "FLinks",
   "version": "1.0.0",
+  "license": "GPL-3.0-or-later",
   "description": "Tu puente entre Filmin y el universo cinematográfico",
   "author": "Antonio Cambados",
   "homepage_url": "https://github.com/antoniocambados/filmin-links",
