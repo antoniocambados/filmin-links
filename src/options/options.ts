@@ -173,7 +173,7 @@ function createProviderItems(enabledProviders: string[], providersOrder: string[
     // Agregar el handle para arrastrar
     const dragHandle = document.createElement('div')
     dragHandle.className = 'drag-handle'
-    dragHandle.innerHTML = '⋮⋮' // Icono de arrastre
+    dragHandle.textContent = '⋮⋮' // Icono de arrastre
 
     // Crear el contenedor de checkbox y etiqueta
     const label = document.createElement('label')

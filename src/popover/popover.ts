@@ -165,7 +165,14 @@ export class Popover {
       preTitleContent = 'Buscar'
     }
 
-    title.innerHTML = `<p class="filminlinks-popover-title">${preTitleContent}<br><span class="filminlinks-popover-term">${this.searchTerm}</span></p>`
+    const p: HTMLParagraphElement = document.createElement('p')
+    p.classList.add('filminlinks-popover-title')
+    p.textContent = preTitleContent
+    const span: HTMLSpanElement = document.createElement('span')
+    span.classList.add('filminlinks-popover-term')
+    span.textContent = this.searchTerm
+    p.append(document.createElement('br'), span)
+    title.append(p)
 
     return title.firstElementChild as HTMLElement
   }
@@ -229,7 +236,7 @@ export class Popover {
       wrapper.classList.add('filminlinks-settings-button-icon')
       wrapper.appendChild(icon)
 
-      button.insertAdjacentHTML('afterbegin', wrapper.outerHTML)
+      button.insertAdjacentElement('afterbegin', wrapper)
     })
 
     row.appendChild(button)
