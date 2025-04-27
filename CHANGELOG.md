@@ -2,6 +2,13 @@
 
 Todos los cambios notables en el proyecto "Filmin Links" serán documentados en este archivo.
 
+## [1.0.1] - 2025-04-27
+
+- Bugfix: no se admite solo la major de Firefox como versión mínima
+- Reduce la cantidad de warnings devueltos por la validación de Mozilla
+- Elimina código no usado
+- Añade un script para realizar el zip de la extensión
+
 ## [1.0.0] - 2025-04-27
 
 ### Lanzamiento inicial
