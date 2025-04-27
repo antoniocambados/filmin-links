@@ -19,7 +19,6 @@
 import manager, { AVAILABLE_PROVIDERS, ProviderManager } from '../provider/provider-manager'
 import { Provider, SearchType } from '../provider/provider'
 import PopoverManager from './popover-manager'
-import { fetchAndCreateElement } from '../fetch'
 
 /**
  * Referencia al gestor de proveedores de búsqueda.
@@ -120,7 +119,6 @@ export class Popover {
     popover.appendChild(header)
     popover.appendChild(toolbar)
     // Ocultamos el botón de opciones porque no funciona en todos los navegadores
-    // popover.appendChild(this.makeSettings())
 
     // Cargar el toolbar de forma asíncrona sin bloquear la visualización
     this.makeToolbar().then((realToolbar) => {
@@ -165,7 +163,14 @@ export class Popover {
       preTitleContent = 'Buscar'
     }
 
-    title.innerHTML = `<p class="filminlinks-popover-title">${preTitleContent}<br><span class="filminlinks-popover-term">${this.searchTerm}</span></p>`
+    const p: HTMLParagraphElement = document.createElement('p')
+    p.classList.add('filminlinks-popover-title')
+    p.textContent = preTitleContent
+    const span: HTMLSpanElement = document.createElement('span')
+    span.classList.add('filminlinks-popover-term')
+    span.textContent = this.searchTerm
+    p.append(document.createElement('br'), span)
+    title.append(p)
 
     return title.firstElementChild as HTMLElement
   }
@@ -182,59 +187,6 @@ export class Popover {
     img.classList.add('filminlinks-logo')
 
     return img
-  }
-
-  /**
-   * Genera el icono de configuración como un elemento SVG en línea.
-   */
-  private async makeSettingsIcon(): Promise<HTMLElement> {
-    return await fetchAndCreateElement({
-      url: chrome.runtime.getURL('icons/settings.svg'),
-    })
-  }
-
-  /**
-   * Crea el botón de configuración con manejo seguro de eventos
-   * para abrir la página de opciones de la extensión.
-   */
-  private makeSettings(): HTMLElement {
-    const row: HTMLElement = this.makeRow('filminlinks-popover-row-settings')
-    const button: HTMLElement = document.createElement('a')
-    // const text: HTMLElement = document.createElement('span')
-    button.setAttribute('href', '#')
-    button.classList.add('filminlinks-settings-button')
-    button.title = 'Configurar FilminLinks'
-    // button.appendChild(text)
-
-    button.addEventListener('click', (event) => {
-      event.preventDefault()
-
-      try {
-        // Intenta abrir la página de opciones mediante mensaje
-        chrome.runtime.sendMessage({ action: 'openOptions' }).catch((error) => {
-          console.error('Error al enviar mensaje:', error)
-          // Plan alternativo: abrir opciones directamente si el mensaje falla
-          chrome.runtime.openOptionsPage()
-        })
-      } catch (e) {
-        console.error('Error al intentar enviar mensaje:', e)
-        // Plan alternativo si la API de mensajes falla por completo
-        chrome.runtime.openOptionsPage()
-      }
-    })
-
-    this.makeSettingsIcon().then((icon) => {
-      // make a wrapper element
-      const wrapper = document.createElement('div')
-      wrapper.classList.add('filminlinks-settings-button-icon')
-      wrapper.appendChild(icon)
-
-      button.insertAdjacentHTML('afterbegin', wrapper.outerHTML)
-    })
-
-    row.appendChild(button)
-
-    return row
   }
 
   /**
