@@ -89,6 +89,7 @@ export abstract class AbstractProvider implements Provider {
 
     // Configurar propiedades del enlace
     link.href = url
+    link.title = `Buscar en ${this.getName()}`
     link.target = '_blank'
     link.classList.add('filminlinks-button', `${this.getId()}-button`, ...extraClasses)
     link.addEventListener('click', (event): void => event.stopPropagation())
