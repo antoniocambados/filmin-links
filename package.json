@@ -4,7 +4,7 @@
   "description": "Añade enlaces externos de webs de información cinematográfica a Filmin.",
   "scripts": {
     "build": "vite build",
-    "watch": "vite build --watch",
+    "dev": "vite build --watch",
     "format": "prettier --write \"src/**/*.{ts,scss,js,json,css}\""
   },
   "devDependencies": {
