@@ -1,3 +1,21 @@
+/**
+ * Filmin Links
+ * Copyright (C) 2025  Antonio Cambados
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import manager, { AVAILABLE_PROVIDERS, ProviderManager } from '../provider/provider-manager'
 import { Provider, SearchType } from '../provider/provider'
 import PopoverManager from './popover-manager'
@@ -96,13 +114,13 @@ export class Popover {
     const popover: HTMLElement = document.createElement('div')
     popover.classList.add('filminlinks-popover', ...this.popoverClasses)
 
-    const settings: HTMLElement = this.makeSettings()
     const header: HTMLElement = this.makeHeader()
     const toolbar = this.makeRow('filminlinks-popover-row-toolbar')
 
     popover.appendChild(header)
     popover.appendChild(toolbar)
-    popover.appendChild(settings)
+    // Ocultamos el botón de opciones porque no funciona en todos los navegadores
+    // popover.appendChild(this.makeSettings())
 
     // Cargar el toolbar de forma asíncrona sin bloquear la visualización
     this.makeToolbar().then((realToolbar) => {
