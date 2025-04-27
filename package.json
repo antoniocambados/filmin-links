@@ -5,7 +5,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "format": "prettier --write \"src/**/*.{ts,scss,js,json,css}\""
+    "format": "prettier --write \"src/**/*.{ts,scss,js,json,css}\"",
+    "update-version": "node update-version.js"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.315",
