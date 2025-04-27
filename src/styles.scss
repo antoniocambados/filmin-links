@@ -1,13 +1,14 @@
 @use 'sass:color';
 
 $filminBackground: #242432;
-$filminBackgroundAlt: color.adjust($filminBackground, $lightness: -5%);
+$filminBackgroundDarker: color.adjust($filminBackground, $lightness: -5%);
+$filminBackgroundDarkest: color.adjust($filminBackground, $lightness: -8%);
 $filminColor: #02ffa1;
 $prefix: 'filminlinks';
 
 :root {
   --flinks-button-popover-background: #{$filminBackground};
-  --flinks-button-popover-background-alt: #{$filminBackgroundAlt};
+  --flinks-button-popover-background-alt: #{$filminBackgroundDarker};
   --flinks-button-popover-border: #{color.adjust($filminBackground, $lightness: 25%, $alpha: 0.8)};
   --flinks-button-popover-radius: 0.25rem;
   --flinks-button-popover-shadow: #{color.adjust($filminBackground, $lightness: -10%, $alpha: 0.8)};
@@ -92,6 +93,7 @@ $prefix: 'filminlinks';
   }
 
   &-popover {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -106,6 +108,13 @@ $prefix: 'filminlinks';
       &-toolbar {
         justify-content: center;
         flex-wrap: wrap;
+      }
+
+      &-settings {
+        position: absolute;
+        top: 0;
+        right: 0;
+        justify-content: flex-end;
       }
     }
 
@@ -124,9 +133,13 @@ $prefix: 'filminlinks';
   &-logo {
     height: 100%;
     max-height: 64px;
+    background-color: $filminBackgroundDarkest;
+    border-radius: 0.5rem;
   }
 
   &-settings-button {
+    display: flex;
+    gap: 0.5em;
     font-size: 0.75em;
     font-weight: 300;
     color: var(--flinks-link-color);
@@ -135,6 +148,12 @@ $prefix: 'filminlinks';
     &:active,
     &:focus {
       color: var(--flinks-link-color-hover);
+    }
+
+    &-icon {
+      width: 1.25em;
+      height: 1.25em;
+      vertical-align: middle;
     }
   }
 

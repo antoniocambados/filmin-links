@@ -1,6 +1,7 @@
 import manager, { AVAILABLE_PROVIDERS, ProviderManager } from '../provider/provider-manager'
 import { Provider, SearchType } from '../provider/provider'
 import PopoverManager from './popover-manager'
+import { fetchAndCreateElement } from '../fetch'
 
 /**
  * Referencia al gestor de proveedores de búsqueda.
@@ -95,15 +96,13 @@ export class Popover {
     const popover: HTMLElement = document.createElement('div')
     popover.classList.add('filminlinks-popover', ...this.popoverClasses)
 
+    const settings: HTMLElement = this.makeSettings()
     const header: HTMLElement = this.makeHeader()
-    const footer: HTMLElement = this.makeFooter()
-
-    const toolbar = document.createElement('div')
-    toolbar.classList.add('filminlinks-popover-row', 'filminlinks-popover-row-toolbar')
+    const toolbar = this.makeRow('filminlinks-popover-row-toolbar')
 
     popover.appendChild(header)
     popover.appendChild(toolbar)
-    popover.appendChild(footer)
+    popover.appendChild(settings)
 
     // Cargar el toolbar de forma asíncrona sin bloquear la visualización
     this.makeToolbar().then((realToolbar) => {
@@ -122,21 +121,10 @@ export class Popover {
    * Construye la cabecera del popover con logo y título.
    */
   private makeHeader(): HTMLElement {
-    const row: HTMLElement = this.makeRow()
+    const row: HTMLElement = this.makeRow('filminlinks-popover-row-header')
 
     row.appendChild(this.makeLogo())
     row.appendChild(this.makeTitle())
-
-    return row
-  }
-
-  /**
-   * Construye el pie del popover con opciones de configuración.
-   */
-  private makeFooter(): HTMLElement {
-    const row: HTMLElement = this.makeRow()
-
-    row.appendChild(this.makeSettings())
 
     return row
   }
@@ -179,14 +167,26 @@ export class Popover {
   }
 
   /**
+   * Genera el icono de configuración como un elemento SVG en línea.
+   */
+  private async makeSettingsIcon(): Promise<HTMLElement> {
+    return await fetchAndCreateElement({
+      url: chrome.runtime.getURL('icons/settings.svg'),
+    })
+  }
+
+  /**
    * Crea el botón de configuración con manejo seguro de eventos
    * para abrir la página de opciones de la extensión.
    */
   private makeSettings(): HTMLElement {
+    const row: HTMLElement = this.makeRow('filminlinks-popover-row-settings')
     const button: HTMLElement = document.createElement('a')
+    // const text: HTMLElement = document.createElement('span')
     button.setAttribute('href', '#')
     button.classList.add('filminlinks-settings-button')
-    button.textContent = 'Configurar FilminLinks'
+    button.title = 'Configurar FilminLinks'
+    // button.appendChild(text)
 
     button.addEventListener('click', (event) => {
       event.preventDefault()
@@ -205,7 +205,18 @@ export class Popover {
       }
     })
 
-    return button
+    this.makeSettingsIcon().then((icon) => {
+      // make a wrapper element
+      const wrapper = document.createElement('div')
+      wrapper.classList.add('filminlinks-settings-button-icon')
+      wrapper.appendChild(icon)
+
+      button.insertAdjacentHTML('afterbegin', wrapper.outerHTML)
+    })
+
+    row.appendChild(button)
+
+    return row
   }
 
   /**
@@ -215,8 +226,7 @@ export class Popover {
    * del usuario.
    */
   private async makeToolbar(): Promise<HTMLElement> {
-    const row: HTMLElement = this.makeRow()
-    row.classList.add('filminlinks-popover-row-center')
+    const row: HTMLElement = this.makeRow('filminlinks-popover-row-center')
 
     // Obtener los proveedores habilitados desde la configuración
     const providerNames = await this.getEnabledProviders()
@@ -233,9 +243,9 @@ export class Popover {
   /**
    * Crea una fila contenedora para los elementos del popover.
    */
-  private makeRow(): HTMLElement {
+  private makeRow(...classes: string[]): HTMLElement {
     let row: HTMLElement = document.createElement('div')
-    row.classList.add('filminlinks-popover-row')
+    row.classList.add('filminlinks-popover-row', ...classes)
 
     return row
   }
