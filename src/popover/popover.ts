@@ -114,13 +114,13 @@ export class Popover {
     const popover: HTMLElement = document.createElement('div')
     popover.classList.add('filminlinks-popover', ...this.popoverClasses)
 
-    const settings: HTMLElement = this.makeSettings()
     const header: HTMLElement = this.makeHeader()
     const toolbar = this.makeRow('filminlinks-popover-row-toolbar')
 
     popover.appendChild(header)
     popover.appendChild(toolbar)
-    popover.appendChild(settings)
+    // Ocultamos el botón de opciones porque no funciona en todos los navegadores
+    // popover.appendChild(this.makeSettings())
 
     // Cargar el toolbar de forma asíncrona sin bloquear la visualización
     this.makeToolbar().then((realToolbar) => {
