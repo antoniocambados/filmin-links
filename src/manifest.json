@@ -39,12 +39,7 @@
     "page": "options/options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "activeTab"],
-  "background": {
-    "scripts": ["background.js"],
-    "service_worker": "background.js",
-    "type": "module"
-  },
+  "permissions": ["storage"],
   "minimum_chrome_version": "121.0",
   "browser_specific_settings": {
     "gecko": {

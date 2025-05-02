@@ -118,7 +118,6 @@ export class Popover {
 
     popover.appendChild(header)
     popover.appendChild(toolbar)
-    // Ocultamos el botón de opciones porque no funciona en todos los navegadores
 
     // Cargar el toolbar de forma asíncrona sin bloquear la visualización
     this.makeToolbar().then((realToolbar) => {
