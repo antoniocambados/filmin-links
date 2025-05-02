@@ -2,6 +2,12 @@
 
 Todos los cambios notables en el proyecto "Filmin Links" serán documentados en este archivo.
 
+## [1.0.2] - 2025-05-02
+
+- Elimina el servicio de background y el permiso de "activeTab"
+- Elimina estilos no usados
+- Añade la versión de la extensión a la página de configuración
+
 ## [1.0.1] - 2025-04-27
 
 - Bugfix: no se admite solo la major de Firefox como versión mínima
