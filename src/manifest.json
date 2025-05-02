@@ -23,7 +23,7 @@
   "host_permissions": ["*://*.filmin.es/*"],
   "web_accessible_resources": [
     {
-      "resources": ["icons/*"],
+      "resources": ["icons/*", "manifest.json"],
       "matches": ["*://*.filmin.es/*"]
     }
   ],
