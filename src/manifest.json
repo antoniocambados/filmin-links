@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Filmin Links",
   "short_name": "FLinks",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "GPL-3.0-or-later",
   "description": "Tu puente entre Filmin y el universo cinematográfico",
   "author": "Antonio Cambados",
