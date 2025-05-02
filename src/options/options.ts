@@ -235,7 +235,24 @@ async function loadOptions() {
   positionSelect.value = result.popoverPosition
 }
 
+/**
+ * Carga la versión de la extensión desde el archivo manifest.json.
+ */
+async function loadVersionNumber() {
+  // Obtener la versión del manifest y mostrarla
+  try {
+    const manifestData = await fetch(chrome.runtime.getURL('manifest.json')).then((response) => response.json())
+    const versionElement = document.getElementById('version-number')
+    if (versionElement && manifestData.version) {
+      versionElement.textContent = `Versión ${manifestData.version}`
+    }
+  } catch (error) {
+    console.error('Error al cargar la versión desde manifest.json:', error)
+  }
+}
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', loadOptions)
+document.addEventListener('DOMContentLoaded', loadVersionNumber)
 form.addEventListener('submit', saveOptions)
 form.addEventListener('reset', restoreDefaults)

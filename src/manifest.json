@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Filmin Links",
   "short_name": "FLinks",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "GPL-3.0-or-later",
   "description": "Tu puente entre Filmin y el universo cinematográfico",
   "author": "Antonio Cambados",
@@ -23,7 +23,7 @@
   "host_permissions": ["*://*.filmin.es/*"],
   "web_accessible_resources": [
     {
-      "resources": ["icons/*"],
+      "resources": ["icons/*", "manifest.json"],
       "matches": ["*://*.filmin.es/*"]
     }
   ],
@@ -39,12 +39,7 @@
     "page": "options/options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "activeTab"],
-  "background": {
-    "scripts": ["background.js"],
-    "service_worker": "background.js",
-    "type": "module"
-  },
+  "permissions": ["storage"],
   "minimum_chrome_version": "121.0",
   "browser_specific_settings": {
     "gecko": {
