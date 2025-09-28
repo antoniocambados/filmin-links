@@ -48,6 +48,10 @@ export default class PopoverManager {
   private preferredPosition: PopoverPosition = PopoverPosition.TOP
   /** Propiedad para almacenar en caché el ancho de la barra de desplazamiento */
   private cachedScrollbarWidth: number = 0
+  /** Propiedad para almacenar la URL previa y detectar cambios de navegación */
+  private previousUrl: string | null = null
+  /** Observador de la navegación */
+  private navigationObserver: MutationObserver
 
   /**
    * Constructor privado que inicializa el gestor.
@@ -103,6 +107,18 @@ export default class PopoverManager {
       },
       { passive: true },
     )
+
+    // Añadir listener de unload para recarga o navegación tradicional
+    window.addEventListener('beforeunload', this.doHide)
+
+    // Cuando se navega mediante SPA
+    this.navigationObserver = new MutationObserver((): void => {
+      if (location.href !== this.previousUrl) {
+        this.previousUrl = location.href
+        this.doHide()
+      }
+    })
+    this.navigationObserver.observe(document, { childList: true, subtree: true })
 
     // Escuchar cambios en la configuración
     chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -557,11 +573,18 @@ export default class PopoverManager {
   private scheduleHide(): void {
     this.cancelHideTimeout()
     this.hideTimeoutId = window.setTimeout(() => {
-      this.popoverEl.classList.remove('visible')
-      if (this.connectionArea) {
-        this.connectionArea.style.display = 'none'
-      }
-      this.hideTimeoutId = null
+      this.doHide()
     }, 300)
+  }
+
+  /**
+   * Oculta el popover.
+   */
+  private doHide(): void {
+    this.popoverEl.classList.remove('visible')
+    if (this.connectionArea) {
+      this.connectionArea.style.display = 'none'
+    }
+    this.hideTimeoutId = null
   }
 }
