@@ -2,6 +2,10 @@
 
 Todos los cambios notables en el proyecto "Filmin Links" serán documentados en este archivo.
 
+## [1.0.3] - 2025-09-28
+
+- Bugfix: el popover se mantiene visible entre cambios de página
+
 ## [1.0.2] - 2025-05-02
 
 - Elimina el servicio de background y el permiso de "activeTab"
